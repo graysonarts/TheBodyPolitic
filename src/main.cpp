@@ -3,19 +3,16 @@
 
 //========================================================================
 int main( ){
+	  float scale = 2.0f;
     ofGLWindowSettings settings;
-    settings.setPosition({0.f,0.f});
-    settings.windowMode = OF_WINDOW;
-    auto controlWin = ofCreateWindow(settings);
 
-    settings.setPosition({(float)controlWin->getWidth(),0.0f});
+    settings.setPosition({0.0f, 0.0f});
+		settings.setSize(1024*scale, 768*scale);
     settings.windowMode = OF_WINDOW;
+
     auto projectorWin = ofCreateWindow(settings);
 
-		auto controlApp = std::make_shared<ofControlApp>();
-
-    ofRunApp(controlWin, controlApp);
-    ofRunApp(projectorWin, std::make_shared<ofDisplayApp>(controlApp));
+    ofRunApp(projectorWin, std::make_shared<ofDisplayApp>());
 
     ofRunMainLoop();
 

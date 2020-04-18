@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<panel>
+	<camera_distance>47.5</camera_distance>
+	<box_size>49.9949, 10, 10</box_size>
+	<full_screen>0</full_screen>
+	<constant>1</constant>
+	<linear>0</linear>
+	<quadratic>0</quadratic>
+</panel>

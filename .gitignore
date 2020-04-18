@@ -1,0 +1,4 @@
+bin/bodyProject
+bin/*.so
+.vscode
+obj

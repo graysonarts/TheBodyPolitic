@@ -10,11 +10,6 @@ class ofDisplayApp : public ofBaseApp {
 		void update();
 		void draw();
 
-		void fullscreenToggled(bool & e);
-
-		bool onSaveMesh(float &f);
-		bool onLoadMesh(float &f);
-
 		void keyPressed(int key);
 		void keyReleased(int key);
 		void mouseDragged(int x, int y, int button);

@@ -19,11 +19,12 @@ void ofDisplayApp::draw() {
 	if (showGui) gui.draw();
 }
 
-void ofDisplayApp::fullscreenToggled(bool & e) {
-	ofSetFullscreen(e);
-}
-
 void ofDisplayApp::keyPressed(int key){
+	if (key == 'i') {
+		showGui = !showGui;
+	} if (key == 'f') {
+		ofToggleFullscreen();
+	}
 	piMapper.keyPressed(key);
 }
 

@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "FboSource.h"
+#include "palette/palette.h"
 
 class Covid19 : public ofx::piMapper::FboSource {
 	public:
@@ -16,7 +17,9 @@ class Covid19 : public ofx::piMapper::FboSource {
 	private:
 		glm::vec2 location;
 		glm::vec2 velocity;
+		glm::ivec2 colorLocation;
 		ofColor color;
 		float speed = 1.0f;
 		bool clearScreen = true;
+		PaletteSource *colorSource;
 };

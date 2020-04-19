@@ -1,6 +1,7 @@
 #include "covid19source.h"
 
 void Covid19::setup() {
+	colorSource = new PaletteSource("palettes/MegaTron.jpg");
 	name = "Covid19";
 	allocate(768, 1024);
 	location.x = ofRandom(fbo->getWidth());
@@ -26,8 +27,9 @@ void Covid19::update() {
 
 	// TODO: Palette Selection rather than random
 	if (bounced) {
-		color.set(ofRandom(255.0), ofRandom(255.0), ofRandom(255.0));
-		color.setBrightness(ofRandom(128.0) + 128.0);
+		glm::ivec2 offset((int)ofRandom(50));
+		colorLocation = (colorLocation + offset) % colorSource->numColors();
+		color = colorSource->getColorAt(colorLocation);
 	}
 }
 

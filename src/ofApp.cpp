@@ -3,9 +3,18 @@
 void ofDisplayApp::setup() {
 	ofxGuiEnableHiResDisplay();
 	showGui = false;
+	speed = speed.set("speed", 1., 1., 10.);
+	drawLine = drawLine.set("clear screen per frame", false);
+
 	gui.setup("panel");
 	gui.setPosition(1000.0f, 0.f);
+	gui.add(speed);
+	gui.add(drawLine);
 
+	speed.addListener(&covid19, &Covid19::onSpeedChange);
+	drawLine.addListener(&covid19, &Covid19::onDrawChange);
+
+	piMapper.registerFboSource(covid19);
 	piMapper.setup();
 }
 
@@ -24,6 +33,8 @@ void ofDisplayApp::keyPressed(int key){
 		showGui = !showGui;
 	} if (key == 'f') {
 		ofToggleFullscreen();
+	} if (key == ' ') {
+		drawLine.set(!drawLine.get());
 	}
 	piMapper.keyPressed(key);
 }

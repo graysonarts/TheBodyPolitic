@@ -6,8 +6,8 @@ void Covid19::setup() {
 	allocate(768, 1024);
 	location.x = ofRandom(fbo->getWidth());
 	location.y = ofRandom(fbo->getHeight());
-	velocity.x = ofRandom(4.0)-2.0;
-	velocity.y = ofRandom(4.0)-2.0;
+	velocity.x = ofRandom(4.0) - 2.0;
+	velocity.y = ofRandom(4.0) - 2.0;
 	color.setHex(0xFFFFFFFF);
 }
 
@@ -15,13 +15,13 @@ void Covid19::update() {
 	location += velocity * speed;
 	bool bounced = false;
 
-	if (location.x <= 0 || location.x >= fbo->getWidth()-20.0) {
-		velocity.x *= -1 * (ofRandom(.50)+.75);
+	if (location.x <= 0 || location.x >= fbo->getWidth() - 20.0) {
+		velocity.x *= -1 * (ofRandom(.50) + .75);
 		bounced = true;
 	}
 
-	if (location.y <=0 || location.y >= fbo->getHeight()-20.0) {
-		velocity.y *= -1 * (ofRandom(.50)+.75);
+	if (location.y <= 0 || location.y >= fbo->getHeight() - 20.0) {
+		velocity.y *= -1 * (ofRandom(.50) + .75);
 		bounced = true;
 	}
 
@@ -38,18 +38,13 @@ void Covid19::draw() {
 		ofSetColor(255.);
 		ofDrawRectangle(0., 0., fbo->getWidth(), fbo->getHeight());
 		ofSetColor(0.);
-		ofDrawRectangle(5., 5., fbo->getWidth()-10., fbo->getHeight()-10.);
+		ofDrawRectangle(5., 5., fbo->getWidth() - 10., fbo->getHeight() - 10.);
 	}
 
 	ofSetColor(color);
 	ofDrawCircle(location.x, location.y, 20.0);
-
 }
 
-void Covid19::onSpeedChange(float &s) {
-	speed = s;
-}
+void Covid19::onSpeedChange(float &s) { speed = s; }
 
-void Covid19::onDrawChange(bool &b) {
-	clearScreen = !b;
-}
+void Covid19::onDrawChange(bool &b) { clearScreen = !b; }

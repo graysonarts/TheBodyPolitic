@@ -17,6 +17,9 @@ class ofDisplayApp : public ofBaseApp {
 		void mousePressed(int x, int y, int button);
 		void mouseReleased(int x, int y, int button);
 
+		ofParameter<float> velx;
+		ofParameter<float> vely;
+
 	private:
 		ofxPiMapper piMapper;
 		ofxPanel gui;

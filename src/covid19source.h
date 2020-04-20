@@ -9,6 +9,7 @@ class Covid19 : public ofx::piMapper::FboSource {
 		void setup();
 		void update();
 		void draw();
+		void reset();
 
 	public:
 		void onSpeedChange(float &s);
@@ -20,6 +21,7 @@ class Covid19 : public ofx::piMapper::FboSource {
 		glm::ivec2 colorLocation;
 		ofColor color;
 		float speed = 1.0f;
+		float resetTime;
 		bool clearScreen = true;
 		PaletteSource *colorSource;
 };

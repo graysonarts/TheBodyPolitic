@@ -3,13 +3,12 @@
 #include "covid19source.h"
 #include "covidData.h"
 #include "ofMain.h"
-#include "ofxCsv.h"
 #include "ofxGui.h"
 #include "ofxPiMapper.h"
 #include <string>
 
 class ofDisplayApp : public ofBaseApp {
-	public:
+public:
 	void setup();
 	void update();
 	void draw();
@@ -20,7 +19,7 @@ class ofDisplayApp : public ofBaseApp {
 	void mousePressed(int x, int y, int button);
 	void mouseReleased(int x, int y, int button);
 
-	private:
+private:
 	ofxPiMapper piMapper;
 	ofxPanel gui;
 
@@ -31,6 +30,5 @@ class ofDisplayApp : public ofBaseApp {
 	Covid19 covid19;
 
 	void loadCovidCsv();
-	ofxCsv csv;
 	std::vector<CovidData> covidData;
 };

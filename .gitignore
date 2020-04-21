@@ -2,3 +2,4 @@ bin/bodyProject
 bin/*.so
 .vscode
 obj
+bin/BodyProject.app

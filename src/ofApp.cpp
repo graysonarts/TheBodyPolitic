@@ -1,4 +1,6 @@
 #include "ofApp.h"
+#include "covidData.h"
+#include "covidLoader.h"
 
 void ofDisplayApp::setup() {
 	ofxGuiEnableHiResDisplay();
@@ -18,41 +20,47 @@ void ofDisplayApp::setup() {
 
 	piMapper.registerFboSource(covid19);
 	piMapper.setup();
+
+	loadCovidCsv();
+
+	ofLog() << "Loaded country . " << covidData[0].countryRegion;
+	ofLog() << "Loaded country . " << covidData[1].countryRegion;
 }
 
-void ofDisplayApp::update() {
-	piMapper.update();
-}
+void ofDisplayApp::loadCovidCsv() { covidData = loadCovidData(); }
+
+void ofDisplayApp::update() { piMapper.update(); }
 
 void ofDisplayApp::draw() {
 	ofBackground(0.0f);
 	piMapper.draw();
-	if (showGui) gui.draw();
+	if (showGui)
+		gui.draw();
 }
 
-void ofDisplayApp::keyPressed(int key){
+void ofDisplayApp::keyPressed(int key) {
 	if (key == 'i') {
 		showGui = !showGui;
-	} if (key == 'f') {
+	}
+	if (key == 'f') {
 		ofToggleFullscreen();
-	} if (key == ' ') {
+	}
+	if (key == ' ') {
 		drawLine.set(!drawLine.get());
 	}
 	piMapper.keyPressed(key);
 }
 
-void ofDisplayApp::keyReleased(int key){
-	piMapper.keyReleased(key);
-}
+void ofDisplayApp::keyReleased(int key) { piMapper.keyReleased(key); }
 
-void ofDisplayApp::mousePressed(int x, int y, int button){
+void ofDisplayApp::mousePressed(int x, int y, int button) {
 	piMapper.mousePressed(x, y, button);
 }
 
-void ofDisplayApp::mouseReleased(int x, int y, int button){
+void ofDisplayApp::mouseReleased(int x, int y, int button) {
 	piMapper.mouseReleased(x, y, button);
 }
 
-void ofDisplayApp::mouseDragged(int x, int y, int button){
+void ofDisplayApp::mouseDragged(int x, int y, int button) {
 	piMapper.mouseDragged(x, y, button);
 }

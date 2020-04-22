@@ -31,6 +31,6 @@ private:
 
 	Covid19 covid19;
 
-	void loadCovidCsv();
+  void loadCovidCsv();
 	std::vector<CovidData> covidData;
 };

@@ -1,6 +1,8 @@
 #pragma once
 
-#include <vector>
 #include "covidData.h"
 
-std::vector<CovidData> loadCovidData();
+#include <string>
+#include <vector>
+
+std::vector<CovidData> loadCovidData(const string &filename);

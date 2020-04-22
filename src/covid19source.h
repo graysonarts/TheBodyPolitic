@@ -24,6 +24,7 @@ private:
 	ofColor color;
 	float speed = 1.0f;
 	float resetTime;
+	float size = 20.0f;
 	bool clearScreen = true;
 	PaletteSource *colorSource;
 

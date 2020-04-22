@@ -34,12 +34,12 @@ void Covid19::update() {
 	location += velocity * speed;
 	bool bounced = false;
 
-	if (location.x <= 0 || location.x >= fbo->getWidth() - 20.0) {
+	if (location.x <= 0 || location.x >= fbo->getWidth() - size) {
 		velocity.x *= -1;
 		bounced = true;
 	}
 
-	if (location.y <= 0 || location.y >= fbo->getHeight() - 20.0) {
+	if (location.y <= 0 || location.y >= fbo->getHeight() - size) {
 		velocity.y *= -1;
 		bounced = true;
 	}
@@ -60,7 +60,7 @@ void Covid19::draw() {
 	}
 
 	ofSetColor(color);
-	ofDrawCircle(location.x, location.y, 20.0);
+	ofDrawCircle(location.x, location.y, size);
 }
 
 void Covid19::loadCovidCsv() { covidData = loadCovidData(); }

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "covid19source.h"
-#include "covidData.h"
 #include "ofMain.h"
 #include "ofxGui.h"
 #include "ofxPiMapper.h"
@@ -30,7 +29,4 @@ private:
 	ofParameter<bool> drawLine;
 
 	Covid19 covid19;
-
-	void loadCovidCsv();
-	std::vector<CovidData> covidData;
 };

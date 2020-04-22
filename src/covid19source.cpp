@@ -1,4 +1,5 @@
 #include "covid19source.h"
+#include "covidLoader.h"
 
 void Covid19::setup() {
 	colorSource = new PaletteSource("palettes/MonteCarlo.jpg");
@@ -6,6 +7,13 @@ void Covid19::setup() {
 	allocate(768, 1024);
 	reset();
 	color = colorSource->getColorAt(colorLocation);
+
+	ofLog() << "Loading the data";
+	loadCovidCsv();
+	ofLog() << "Loaded " << covidData.size() << " entries";
+
+	ofLog() << "Loaded country . " << covidData[0].countryRegion;
+	ofLog() << "Loaded country . " << covidData[1].countryRegion;
 }
 
 void Covid19::reset() {
@@ -54,6 +62,8 @@ void Covid19::draw() {
 	ofSetColor(color);
 	ofDrawCircle(location.x, location.y, 20.0);
 }
+
+void Covid19::loadCovidCsv() { covidData = loadCovidData(); }
 
 void Covid19::onSpeedChange(float &s) { speed = s; }
 

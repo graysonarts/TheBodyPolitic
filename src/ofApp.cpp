@@ -1,5 +1,4 @@
 #include "ofApp.h"
-#include "covidData.h"
 #include "covidLoader.h"
 
 void ofDisplayApp::setup() {
@@ -20,16 +19,7 @@ void ofDisplayApp::setup() {
 
 	piMapper.registerFboSource(covid19);
 	piMapper.setup();
-
-	ofLog() << "Loading the data";
-	loadCovidCsv();
-	ofLog() << "Loaded " << covidData.size() << " entries";
-
-	ofLog() << "Loaded country . " << covidData[0].countryRegion;
-	ofLog() << "Loaded country . " << covidData[1].countryRegion;
 }
-
-void ofDisplayApp::loadCovidCsv() { covidData = loadCovidData(); }
 
 void ofDisplayApp::update() { piMapper.update(); }
 

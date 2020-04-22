@@ -2,6 +2,9 @@
 #include "covidData.h"
 #include "covidLoader.h"
 
+const std::string DATA_FILENAME = "covid_data.csv";
+const std::string SAMPLE_DATA_FILENAME = "covid_sample_data.csv";
+
 void ofDisplayApp::setup() {
 	ofxGuiEnableHiResDisplay();
 	showGui = false;
@@ -27,7 +30,14 @@ void ofDisplayApp::setup() {
 	ofLog() << "Loaded country . " << covidData[1].countryRegion;
 }
 
-void ofDisplayApp::loadCovidCsv() { covidData = loadCovidData(); }
+void ofDisplayApp::loadCovidCsv() {
+	if (ofFile::doesFileExist(ofToDataPath(DATA_FILENAME))) {
+		covidData = loadCovidData(DATA_FILENAME);
+	} else {
+		ofLog(OF_LOG_WARNING) << "Unable to find " << DATA_FILENAME << ", loading " << SAMPLE_DATA_FILENAME;
+		covidData = loadCovidData(SAMPLE_DATA_FILENAME);
+	}
+}
 
 void ofDisplayApp::update() { piMapper.update(); }
 

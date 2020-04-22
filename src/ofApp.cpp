@@ -5,13 +5,15 @@
 void ofDisplayApp::setup() {
 	ofxGuiEnableHiResDisplay();
 	showGui = false;
-	speed = speed.set("speed", 1., 1., 10.);
+	speed = speed.set("speed", 5., 1., 10.);
 	drawLine = drawLine.set("clear screen per frame", false);
 
 	gui.setup("panel");
 	gui.setPosition(1000.0f, 0.f);
 	gui.add(speed);
 	gui.add(drawLine);
+	gui.add(velx);
+	gui.add(vely);
 
 	speed.addListener(&covid19, &Covid19::onSpeedChange);
 	drawLine.addListener(&covid19, &Covid19::onDrawChange);

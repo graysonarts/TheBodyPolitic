@@ -19,10 +19,12 @@ public:
 	void mousePressed(int x, int y, int button);
 	void mouseReleased(int x, int y, int button);
 
+	ofParameter<float> velx;
+	ofParameter<float> vely;
+
 private:
 	ofxPiMapper piMapper;
 	ofxPanel gui;
-
 	bool showGui;
 	ofParameter<float> speed;
 	ofParameter<bool> drawLine;

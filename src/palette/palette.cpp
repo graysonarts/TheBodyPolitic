@@ -25,7 +25,7 @@ ofColor PaletteSource::getColorAt(const glm::ivec2 position) const {
 		return ofColor::chartreuse;
 	}
 
-	return source->getColor(position.x, position.y);
+	return ofColor(source->getColor(position.x, position.y), 128.f);
 }
 
 glm::ivec2 PaletteSource::numColors() const {

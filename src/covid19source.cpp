@@ -1,31 +1,41 @@
 #include "covid19source.h"
 
 void Covid19::setup() {
-	colorSource = new PaletteSource("palettes/MegaTron.jpg");
+	colorSource = new PaletteSource("palettes/MonteCarlo.jpg");
 	name = "Covid19";
 	allocate(768, 1024);
+	reset();
+	color = colorSource->getColorAt(colorLocation);
+}
+
+void Covid19::reset() {
 	location.x = ofRandom(fbo->getWidth());
 	location.y = ofRandom(fbo->getHeight());
 	velocity.x = ofRandom(4.0) - 2.0;
 	velocity.y = ofRandom(4.0) - 2.0;
-	color.setHex(0xFFFFFFFF);
+	ofClear(0.);
+	resetTime = ofGetElapsedTimef();
 }
 
 void Covid19::update() {
+
+	if (ofGetElapsedTimef() - resetTime > 120.f) {
+		reset();
+	}
+
 	location += velocity * speed;
 	bool bounced = false;
 
 	if (location.x <= 0 || location.x >= fbo->getWidth() - 20.0) {
-		velocity.x *= -1 * (ofRandom(.50) + .75);
+		velocity.x *= -1;
 		bounced = true;
 	}
 
 	if (location.y <= 0 || location.y >= fbo->getHeight() - 20.0) {
-		velocity.y *= -1 * (ofRandom(.50) + .75);
+		velocity.y *= -1;
 		bounced = true;
 	}
 
-	// TODO: Palette Selection rather than random
 	if (bounced) {
 		glm::ivec2 offset((int)ofRandom(50));
 		colorLocation = (colorLocation + offset) % colorSource->numColors();

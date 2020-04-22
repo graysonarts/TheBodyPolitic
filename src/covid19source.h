@@ -9,6 +9,7 @@ public:
 	void setup();
 	void update();
 	void draw();
+	void reset();
 
 public:
 	void onSpeedChange(float &s);
@@ -20,6 +21,7 @@ private:
 	glm::ivec2 colorLocation;
 	ofColor color;
 	float speed = 1.0f;
+	float resetTime;
 	bool clearScreen = true;
 	PaletteSource *colorSource;
 };

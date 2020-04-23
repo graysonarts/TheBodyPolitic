@@ -1,4 +1,4 @@
-bin/bodyProject
+bin/bodyProject*
 bin/*.so
 .vscode
 obj

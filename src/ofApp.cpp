@@ -1,9 +1,6 @@
 #include "ofApp.h"
 #include "covidLoader.h"
 
-const std::string DATA_FILENAME = "covid_data.csv";
-const std::string SAMPLE_DATA_FILENAME = "covid_sample_data.csv";
-
 void ofDisplayApp::setup() {
 	ofxGuiEnableHiResDisplay();
 	showGui = false;

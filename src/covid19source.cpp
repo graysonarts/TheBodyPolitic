@@ -3,6 +3,9 @@
 
 #include <cmath>
 
+const std::string DATA_FILENAME = "covid_data.csv";
+const std::string SAMPLE_DATA_FILENAME = "covid_sample_data.csv";
+
 void Covid19::setup() {
 	font.load("Montserrat-Medium.ttf", 16);
 	colorSource = new PaletteSource("palettes/MonteCarlo.jpg");
@@ -51,7 +54,9 @@ void Covid19::update() {
 	}
 
 	glm::ivec2 offset((int)(ofRandom(50)-25));
-	colorLocation = (colorLocation + offset) % colorSource->numColors();
+	colorLocation += offset;
+	colorLocation.x = ofWrap(colorLocation.x, 0, colorSource->numColors().x);
+	colorLocation.y = ofWrap(colorLocation.y, 0, colorSource->numColors().y);
 	color = colorSource->getColorAt(colorLocation);
 }
 
@@ -72,7 +77,13 @@ void Covid19::draw() {
 	font.drawString(covidData[index].date, fbo->getWidth() / 2.f, fbo->getHeight() / 2.f);
 }
 
-void Covid19::loadCovidCsv() { covidData = loadCovidData(); }
+void Covid19::loadCovidCsv() {
+	if (ofFile::doesFileExist(DATA_FILENAME)) {
+		covidData = loadCovidData(DATA_FILENAME);
+	} else {
+		covidData = loadCovidData(SAMPLE_DATA_FILENAME);
+	}
+}
 
 void Covid19::onSpeedChange(float &s) { speed = s; }
 

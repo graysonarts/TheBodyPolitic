@@ -1,10 +1,11 @@
 #include "covidLoader.h"
 #include "ofMain.h"
 #include "ofxCsv.h"
+
 #include <map>
 #include <string>
 
-std::vector<CovidData> loadCovidData() {
+std::vector<CovidData> loadCovidData(const string &filename) {
 	ofxCsv csv;
 	std::vector<CovidData> covidData;
 
@@ -14,7 +15,7 @@ std::vector<CovidData> loadCovidData() {
 		pair<string, CovidData::CaseType>("Deaths",
 										  CovidData::CaseType::deaths)};
 
-	csv.load("covid_data.csv");
+	csv.load(filename);
 	int row = 0;
 	for (auto x : csv) {
 		row++;

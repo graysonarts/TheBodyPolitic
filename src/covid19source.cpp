@@ -1,7 +1,10 @@
 #include "covid19source.h"
 #include "covidLoader.h"
 
+#include <cmath>
+
 void Covid19::setup() {
+	font.load("Montserrat-Medium.ttf", 16);
 	colorSource = new PaletteSource("palettes/MonteCarlo.jpg");
 	name = "Covid19";
 	allocate(768, 1024);
@@ -32,6 +35,9 @@ void Covid19::update() {
 	}
 
 	location += velocity * speed;
+	index = (int)ceil(ofGetElapsedTimef()) % covidData.size();
+	int growth = covidData[index].difference;
+	size = ofMap(growth, -20000, 20000, 10, 200);
 	bool bounced = false;
 
 	if (location.x <= 0 || location.x >= fbo->getWidth() - size) {
@@ -44,11 +50,9 @@ void Covid19::update() {
 		bounced = true;
 	}
 
-	if (bounced) {
-		glm::ivec2 offset((int)ofRandom(50));
-		colorLocation = (colorLocation + offset) % colorSource->numColors();
-		color = colorSource->getColorAt(colorLocation);
-	}
+	glm::ivec2 offset((int)(ofRandom(50)-25));
+	colorLocation = (colorLocation + offset) % colorSource->numColors();
+	color = colorSource->getColorAt(colorLocation);
 }
 
 void Covid19::draw() {
@@ -61,6 +65,11 @@ void Covid19::draw() {
 
 	ofSetColor(color);
 	ofDrawCircle(location.x, location.y, size);
+
+	ofSetColor(0.);
+	ofDrawRectangle(font.getStringBoundingBox(covidData[index].date, fbo->getWidth() / 2.f, fbo->getHeight() / 2.f));
+	ofSetColor(255.);
+	font.drawString(covidData[index].date, fbo->getWidth() / 2.f, fbo->getHeight() / 2.f);
 }
 
 void Covid19::loadCovidCsv() { covidData = loadCovidData(); }

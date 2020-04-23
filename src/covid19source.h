@@ -27,7 +27,9 @@ private:
 	float size = 20.0f;
 	bool clearScreen = true;
 	PaletteSource *colorSource;
+	ofTrueTypeFont font;
 
 	void loadCovidCsv();
 	std::vector<CovidData> covidData;
+	int index;
 };

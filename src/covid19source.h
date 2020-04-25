@@ -1,10 +1,9 @@
 #pragma once
 
 #include "FboSource.h"
-#include "ofMain.h"
 #include "covidData.h"
+#include "ofMain.h"
 #include "palette/palette.h"
-
 
 class Covid19 : public ofx::piMapper::FboSource {
 public:
@@ -30,6 +29,7 @@ private:
 	ofTrueTypeFont font;
 
 	void loadCovidCsv();
+	void sortDataByDate();
 	std::vector<CovidData> covidData;
 	int index;
 };

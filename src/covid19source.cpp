@@ -2,6 +2,7 @@
 #include "covidLoader.h"
 #include "ofxTime.h"
 
+#include <algorithm>
 #include <cmath>
 
 const std::string DATA_FILENAME = "covid_data.csv";
@@ -17,6 +18,7 @@ void Covid19::setup() {
 
 	ofLog() << "Loading the data";
 	loadCovidCsv();
+	sortDataByDate();
 	ofLog() << "Loaded " << covidData.size() << " entries";
 
 	ofLog() << "Loaded country . " << covidData[0].countryRegion;
@@ -91,6 +93,10 @@ void Covid19::loadCovidCsv() {
 	}
 }
 
-void Covid19::onSpeedChange(float &s) { speed = s; }
+void Covid19::sortDataByDate() {
+	std::sort(covidData.begin(), covidData.end());
+}
+
+void Covid19::onSpeedChange(float &f) { speed = f; }
 
 void Covid19::onDrawChange(bool &b) { clearScreen = !b; }

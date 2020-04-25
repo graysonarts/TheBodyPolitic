@@ -77,9 +77,11 @@ void Covid19::draw() {
 	auto formattedDate =
 		Poco::DateTimeFormatter::format(covidData[index].date, "%Y-%d-%m");
 
+	ofRectangle textField = font.getStringBoundingBox(
+		formattedDate, fbo->getWidth() / 2.f, fbo->getHeight() / 2.f);
+	textField.scaleFromCenter(2.0f);
 	ofSetColor(0.);
-	ofDrawRectangle(font.getStringBoundingBox(
-		formattedDate, fbo->getWidth() / 2.f, fbo->getHeight() / 2.f));
+	ofDrawRectangle(textField);
 	ofSetColor(255.);
 	font.drawString(formattedDate, fbo->getWidth() / 2.f,
 					fbo->getHeight() / 2.f);

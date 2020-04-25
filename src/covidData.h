@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ofxTime.h"
+
 #include <iostream>
 #include <string>
 
@@ -27,7 +29,7 @@ struct CovidData {
 	CaseType caseType;
 	int cases;
 	int difference;
-	string date;
+	Poco::DateTime date; // TODO: Convert to unix timestamp for sorting
 	string countryRegion;
 	string provinceState;
 	string admin2;
@@ -35,4 +37,6 @@ struct CovidData {
 	int fips;
 	float latitude;
 	float longitude;
+
+	bool operator<(const CovidData &rhs) const { return date < rhs.date; }
 };

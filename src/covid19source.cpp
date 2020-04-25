@@ -1,5 +1,6 @@
 #include "covid19source.h"
 #include "covidLoader.h"
+#include "ofxTime.h"
 
 #include <cmath>
 
@@ -53,7 +54,7 @@ void Covid19::update() {
 		bounced = true;
 	}
 
-	glm::ivec2 offset((int)(ofRandom(50)-25));
+	glm::ivec2 offset((int)(ofRandom(50) - 25));
 	colorLocation += offset;
 	colorLocation.x = ofWrap(colorLocation.x, 0, colorSource->numColors().x);
 	colorLocation.y = ofWrap(colorLocation.y, 0, colorSource->numColors().y);
@@ -71,10 +72,15 @@ void Covid19::draw() {
 	ofSetColor(color);
 	ofDrawCircle(location.x, location.y, size);
 
+	auto formattedDate =
+		Poco::DateTimeFormatter::format(covidData[index].date, "%Y-%d-%m");
+
 	ofSetColor(0.);
-	ofDrawRectangle(font.getStringBoundingBox(covidData[index].date, fbo->getWidth() / 2.f, fbo->getHeight() / 2.f));
+	ofDrawRectangle(font.getStringBoundingBox(
+		formattedDate, fbo->getWidth() / 2.f, fbo->getHeight() / 2.f));
 	ofSetColor(255.);
-	font.drawString(covidData[index].date, fbo->getWidth() / 2.f, fbo->getHeight() / 2.f);
+	font.drawString(formattedDate, fbo->getWidth() / 2.f,
+					fbo->getHeight() / 2.f);
 }
 
 void Covid19::loadCovidCsv() {

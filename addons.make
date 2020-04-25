@@ -4,3 +4,5 @@ ofxOsc
 ofxSvg
 ofxPiMapper
 ofxCsv
+ofxTime
+ofxPoco

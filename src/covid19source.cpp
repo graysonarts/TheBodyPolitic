@@ -1,5 +1,5 @@
 #include "covid19source.h"
-#include "covidLoader.h"
+#include "data/covidLoader.h"
 #include "ofxTime.h"
 
 #include <algorithm>

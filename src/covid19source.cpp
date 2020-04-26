@@ -8,6 +8,10 @@
 const std::string DATA_FILENAME = "covid_data.csv";
 const std::string SAMPLE_DATA_FILENAME = "covid_sample_data.csv";
 
+namespace {
+float interpolate(float pct) { return ofMap(pct, 0, 1, 10, 200); }
+} // namespace
+
 void Covid19::setup() {
 	font.load("Montserrat-Medium.ttf", 16);
 	colorSource = new PaletteSource("palettes/MonteCarlo.jpg");
@@ -23,6 +27,7 @@ void Covid19::setup() {
 
 	ofLog() << "Loaded country . " << covidData[0].countryRegion;
 	ofLog() << "Loaded country . " << covidData[1].countryRegion;
+	size = 0.f;
 }
 
 void Covid19::reset() {
@@ -41,17 +46,29 @@ void Covid19::update() {
 	}
 
 	location += velocity * speed;
-	index = (int)ceil(ofGetElapsedTimef()) % covidData.size();
-	int growth = covidData[index].difference;
-	size = ofMap(growth, -20000, 20000, 10, 200);
+	index = (int)ceil(ofGetFrameNum()) % covidData.size();
+	if (index != lastIndex) {
+		int growth = covidData[index].difference;
+		// size = ofMap(growth, -20000, 20000, 10, 200);
+		size += growth;
+		scaledSize = interpolate(ofNormalize(size, 0, 100000));
+
+		ofLog(OF_LOG_NOTICE)
+			<< growth << " -> " << size << " -> " << scaledSize;
+	}
+
+	if (index < lastIndex) {
+		ofExit();
+	}
+	lastIndex = index;
 	bool bounced = false;
 
-	if (location.x <= 0 || location.x >= fbo->getWidth() - size) {
+	if (location.x <= scaledSize || location.x >= fbo->getWidth() - scaledSize) {
 		velocity.x *= -1;
 		bounced = true;
 	}
 
-	if (location.y <= 0 || location.y >= fbo->getHeight() - size) {
+	if (location.y <= scaledSize || location.y >= fbo->getHeight() - scaledSize) {
 		velocity.y *= -1;
 		bounced = true;
 	}
@@ -72,7 +89,7 @@ void Covid19::draw() {
 	}
 
 	ofSetColor(color);
-	ofDrawCircle(location.x, location.y, size);
+	ofDrawCircle(location.x, location.y, scaledSize);
 
 	auto formattedDate =
 		Poco::DateTimeFormatter::format(covidData[index].date, "%Y-%d-%m");

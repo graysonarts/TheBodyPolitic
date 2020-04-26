@@ -24,6 +24,7 @@ private:
 	float speed = 1.0f;
 	float resetTime;
 	float size = 20.0f;
+	float scaledSize = 0.0f;
 	bool clearScreen = true;
 	PaletteSource *colorSource;
 	ofTrueTypeFont font;
@@ -31,5 +32,5 @@ private:
 	void loadCovidCsv();
 	void sortDataByDate();
 	std::vector<CovidData> covidData;
-	int index;
+	int index, lastIndex;
 };

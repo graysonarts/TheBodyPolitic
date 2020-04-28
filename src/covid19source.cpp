@@ -15,10 +15,17 @@ float interpolate(float pct) { return ofMap(pct, 0, 1, 10, 200); }
 void Covid19::setup() {
 	font.load("Montserrat-Medium.ttf", 16);
 	colorSource = new PaletteSource("palettes/MonteCarlo.jpg");
+
+	screenSize = ofGetWindowSize();
+	particlePayload.speed = &speed;
+	particlePayload.screenSize = &screenSize;
+	particlePayload.colorPalette = colorSource;
+
+	particle = new Particle(particlePayload);
+
 	name = "Covid19";
 	allocate(768, 1024);
 	reset();
-	color = colorSource->getColorAt(colorLocation);
 
 	ofLog() << "Loading the data";
 	loadCovidCsv();
@@ -31,10 +38,7 @@ void Covid19::setup() {
 }
 
 void Covid19::reset() {
-	location.x = ofRandom(fbo->getWidth());
-	location.y = ofRandom(fbo->getHeight());
-	velocity.x = ofRandom(4.0) - 2.0;
-	velocity.y = ofRandom(4.0) - 2.0;
+	particle->randomize();
 	ofClear(0.);
 	resetTime = ofGetElapsedTimef();
 }
@@ -45,8 +49,7 @@ void Covid19::update() {
 		reset();
 	}
 
-	location += velocity * speed;
-	index = (int)ceil(ofGetFrameNum()) % covidData.size();
+	index = (int)ceil(ofGetFrameNum() * 10.) % covidData.size();
 	if (index != lastIndex) {
 		int growth = covidData[index].difference;
 		// size = ofMap(growth, -20000, 20000, 10, 200);
@@ -56,28 +59,21 @@ void Covid19::update() {
 		ofLog(OF_LOG_NOTICE)
 			<< growth << " -> " << size << " -> " << scaledSize;
 	}
+  // TODO: move scaled size to particle
+	particle->scaledSize = scaledSize;
+	particle->update();
 
 	if (index < lastIndex) {
 		ofExit();
 	}
 	lastIndex = index;
-	bool bounced = false;
 
-	if (location.x <= scaledSize || location.x >= fbo->getWidth() - scaledSize) {
-		velocity.x *= -1;
-		bounced = true;
-	}
-
-	if (location.y <= scaledSize || location.y >= fbo->getHeight() - scaledSize) {
-		velocity.y *= -1;
-		bounced = true;
-	}
-
+	// TODO: Move this to particle
 	glm::ivec2 offset((int)(ofRandom(50) - 25));
 	colorLocation += offset;
 	colorLocation.x = ofWrap(colorLocation.x, 0, colorSource->numColors().x);
 	colorLocation.y = ofWrap(colorLocation.y, 0, colorSource->numColors().y);
-	color = colorSource->getColorAt(colorLocation);
+	particle->color = colorSource->getColorAt(colorLocation);
 }
 
 void Covid19::draw() {
@@ -88,8 +84,7 @@ void Covid19::draw() {
 		ofDrawRectangle(5., 5., fbo->getWidth() - 10., fbo->getHeight() - 10.);
 	}
 
-	ofSetColor(color);
-	ofDrawCircle(location.x, location.y, scaledSize);
+	particle->draw();
 
 	auto formattedDate =
 		Poco::DateTimeFormatter::format(covidData[index].date, "%Y-%d-%m");

@@ -4,6 +4,7 @@
 #include "covidData.h"
 #include "ofMain.h"
 #include "palette/palette.h"
+#include "particle/particle.h"
 
 class Covid19 : public ofx::piMapper::FboSource {
 public:
@@ -17,10 +18,8 @@ public:
 	void onDrawChange(bool &b);
 
 private:
-	glm::vec2 location;
-	glm::vec2 velocity;
+	glm::vec2 screenSize;
 	glm::ivec2 colorLocation;
-	ofColor color;
 	float speed = 1.0f;
 	float resetTime;
 	float size = 20.0f;
@@ -33,4 +32,7 @@ private:
 	void sortDataByDate();
 	std::vector<CovidData> covidData;
 	int index, lastIndex;
+
+	ParentReference particlePayload;
+	Particle *particle;
 };

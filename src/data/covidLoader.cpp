@@ -18,6 +18,7 @@ struct RawCovidData {
 RawCovidData _loadRawData(const string &filename);
 std::pair<BucketMap, Buckets> _bucketData(const std::vector<CovidData>& data);
 Poco::DateTime parseDate(const string &input);
+string countryOnly(const string &input);
 
 LoadedCovidData loadCovidData(const string &filename) {
 	auto data = _loadRawData(filename);
@@ -95,7 +96,7 @@ std::pair<BucketMap, Buckets> _bucketData(const std::vector<CovidData>& data) {
 
 	for(auto &entry : data) {
 		int32_t item = entry.difference;
-		BucketKey dimension = entry.fips;
+		BucketKey dimension = countryOnly(entry.countryRegion);
 		Poco::DateTime date = entry.date;
 
 		bucketMap[make_pair(date, dimension)] += item;
@@ -106,4 +107,14 @@ std::pair<BucketMap, Buckets> _bucketData(const std::vector<CovidData>& data) {
 	sort(buckets.begin(), buckets.end());
 
 	return make_pair(bucketMap, buckets);
+}
+
+string countryOnly(const string& input) {
+	auto last_comma = find_if(input.crbegin(), input.crend(), [](auto c) { return c == ','; });
+	if (last_comma == input.crend()) return input;
+
+	--last_comma; // Skip space, it's -- because it's a reverse iterator...
+	string retval(input.crbegin(), last_comma);
+	reverse(retval.begin(), retval.end());
+	return retval;
 }

@@ -7,12 +7,23 @@
 
 static string DATE_FORMAT = "%n/%e/%Y";
 
-Poco::DateTime parseDate(string input) {
-	int timezone = 0;
-	return Poco::DateTimeParser::parse(DATE_FORMAT, input, timezone);
-}
+struct RawCovidData {
+	std::vector<CovidData> data;
+	std::pair<Poco::DateTime, Poco::DateTime> dateRange;
+};
+
+RawCovidData _loadRawData(const string &filename);
+Poco::DateTime parseDate(const string &input);
 
 LoadedCovidData loadCovidData(const string &filename) {
+	auto data = _loadRawData(filename);
+	sort(data.data.begin(), data.data.end());
+
+	return { data.data, data.dateRange, {} };
+}
+
+
+RawCovidData _loadRawData(const string &filename) {
 	ofxCsv csv;
 	std::vector<CovidData> covidData;
 	Poco::DateTime earliestDate(3000, 12, 31)
@@ -62,4 +73,9 @@ LoadedCovidData loadCovidData(const string &filename) {
 	pair<Poco::DateTime, Poco::DateTime> dateRange(earliestDate, latestDate);
 
 	return { covidData, dateRange };
+}
+
+Poco::DateTime parseDate(const string &input) {
+	int timezone = 0;
+	return Poco::DateTimeParser::parse(DATE_FORMAT, input, timezone);
 }

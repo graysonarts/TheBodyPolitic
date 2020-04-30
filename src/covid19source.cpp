@@ -111,7 +111,7 @@ void Covid19::loadCovidCsv() {
 }
 
 void Covid19::sortDataByDate() {
-	sort(covidData.data.begin(), covidData.data.end());
+	// nop
 }
 
 void Covid19::onSpeedChange(float &f) { speed = f; }

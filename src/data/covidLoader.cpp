@@ -32,7 +32,6 @@ LoadedCovidData loadCovidData(const string &filename) {
 	return { data.data, data.dateRange, bucketMap, buckets };
 }
 
-
 RawCovidData _loadRawData(const string &filename) {
 	ofxCsv csv;
 	std::vector<CovidData> covidData;

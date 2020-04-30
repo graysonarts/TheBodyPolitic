@@ -93,12 +93,12 @@ std::pair<BucketMap, Buckets> _bucketData(const std::vector<CovidData>& data) {
 	BucketMap bucketMap;
 	unordered_set<BucketKey> bucketSet;
 
-	for(auto entry : data) {
-		CovidData* item = &entry;
-		BucketKey dimension = item->fips;
-		Poco::DateTime date = item->date;
+	for(auto &entry : data) {
+		int32_t item = entry.difference;
+		BucketKey dimension = entry.fips;
+		Poco::DateTime date = entry.date;
 
-		bucketMap[make_pair(date, dimension)] = item;
+		bucketMap[make_pair(date, dimension)] += item;
 		bucketSet.insert(dimension);
 	}
 

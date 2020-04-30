@@ -1,7 +1,7 @@
 #pragma once
 
 #include "FboSource.h"
-#include "covidData.h"
+#include "covidLoader.h"
 #include "ofMain.h"
 #include "palette/palette.h"
 #include "particle/particle.h"
@@ -30,7 +30,7 @@ private:
 
 	void loadCovidCsv();
 	void sortDataByDate();
-	std::vector<CovidData> covidData;
+	LoadedCovidData covidData;
 	int index, lastIndex;
 
 	ParentReference particlePayload;

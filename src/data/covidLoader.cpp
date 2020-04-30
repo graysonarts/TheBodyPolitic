@@ -12,9 +12,11 @@ Poco::DateTime parseDate(string input) {
 	return Poco::DateTimeParser::parse(DATE_FORMAT, input, timezone);
 }
 
-std::vector<CovidData> loadCovidData(const string &filename) {
+LoadedCovidData loadCovidData(const string &filename) {
 	ofxCsv csv;
 	std::vector<CovidData> covidData;
+	Poco::DateTime earliestDate(3000, 12, 31)
+							 , latestDate(1990, 1, 1);
 
 	map<string, CovidData::CaseType> caseTypeMap{
 		pair<string, CovidData::CaseType>("Confirmed",
@@ -46,8 +48,18 @@ std::vector<CovidData> loadCovidData(const string &filename) {
 		tmp.latitude = x.getFloat(CovidData::FieldLabel::Lat);
 		tmp.longitude = x.getFloat(CovidData::FieldLabel::Long);
 
+		if (tmp.date < earliestDate) {
+			earliestDate = tmp.date;
+		}
+
+		if (tmp.date > latestDate) {
+			latestDate = tmp.date;
+		}
+
 		covidData.push_back(tmp);
 	}
 
-	return covidData;
+	pair<Poco::DateTime, Poco::DateTime> dateRange(earliestDate, latestDate);
+
+	return { covidData, dateRange };
 }

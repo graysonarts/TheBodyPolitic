@@ -5,8 +5,11 @@
 #include <algorithm>
 #include <cmath>
 
-const std::string DATA_FILENAME = "covid_data.csv";
-const std::string SAMPLE_DATA_FILENAME = "covid_sample_data.csv";
+using namespace  std;
+
+const string DATA_FILENAME = "covid_data.csv";
+const string SAMPLE_DATA_FILENAME = "covid_sample_data.csv";
+const string DATE_FORMAT = "%Y-%m-%d";
 
 namespace {
 float interpolate(float pct) { return ofMap(pct, 0, 1, 10, 200); }
@@ -30,10 +33,10 @@ void Covid19::setup() {
 	ofLog() << "Loading the data";
 	loadCovidCsv();
 	sortDataByDate();
-	ofLog() << "Loaded " << covidData.size() << " entries";
-
-	ofLog() << "Loaded country . " << covidData[0].countryRegion;
-	ofLog() << "Loaded country . " << covidData[1].countryRegion;
+	ofLog() << "Loaded " << covidData.data.size() << " entries";
+	ofLog() << "Date Range: " <<
+		Poco::DateTimeFormatter::format(covidData.dateRange.first, DATE_FORMAT) << " to " <<
+		Poco::DateTimeFormatter::format(covidData.dateRange.second, DATE_FORMAT);
 	size = 0.f;
 }
 
@@ -49,9 +52,9 @@ void Covid19::update() {
 		reset();
 	}
 
-	index = (int)ceil(ofGetFrameNum() * 10.) % covidData.size();
+	index = (int)ceil(ofGetFrameNum() * 10.) % covidData.data.size();
 	if (index != lastIndex) {
-		int growth = covidData[index].difference;
+		int growth = covidData.data[index].difference;
 		// size = ofMap(growth, -20000, 20000, 10, 200);
 		size += growth;
 		scaledSize = interpolate(ofNormalize(size, 0, 100000));
@@ -87,7 +90,7 @@ void Covid19::draw() {
 	particle->draw();
 
 	auto formattedDate =
-		Poco::DateTimeFormatter::format(covidData[index].date, "%Y-%d-%m");
+		Poco::DateTimeFormatter::format(covidData.data[index].date, DATE_FORMAT);
 
 	ofRectangle textField = font.getStringBoundingBox(
 		formattedDate, fbo->getWidth() / 2.f, fbo->getHeight() / 2.f);
@@ -108,7 +111,7 @@ void Covid19::loadCovidCsv() {
 }
 
 void Covid19::sortDataByDate() {
-	std::sort(covidData.begin(), covidData.end());
+	sort(covidData.data.begin(), covidData.data.end());
 }
 
 void Covid19::onSpeedChange(float &f) { speed = f; }

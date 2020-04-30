@@ -1,9 +1,5 @@
 #include "ofApp.h"
-#include "covidData.h"
 #include "covidLoader.h"
-
-const std::string DATA_FILENAME = "covid_data.csv";
-const std::string SAMPLE_DATA_FILENAME = "covid_sample_data.csv";
 
 void ofDisplayApp::setup() {
 	ofxGuiEnableHiResDisplay();
@@ -23,21 +19,8 @@ void ofDisplayApp::setup() {
 
 	piMapper.registerFboSource(covid19);
 	piMapper.setup();
-
-	loadCovidCsv();
-
-	ofLog() << "Loaded country . " << covidData[0].countryRegion;
-	ofLog() << "Loaded country . " << covidData[1].countryRegion;
 }
 
-void ofDisplayApp::loadCovidCsv() {
-	if (ofFile::doesFileExist(ofToDataPath(DATA_FILENAME))) {
-		covidData = loadCovidData(DATA_FILENAME);
-	} else {
-		ofLog(OF_LOG_WARNING) << "Unable to find " << DATA_FILENAME << ", loading " << SAMPLE_DATA_FILENAME;
-		covidData = loadCovidData(SAMPLE_DATA_FILENAME);
-	}
-}
 
 void ofDisplayApp::update() { piMapper.update(); }
 

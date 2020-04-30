@@ -5,6 +5,13 @@
 #include <map>
 #include <string>
 
+static string DATE_FORMAT = "%n/%e/%Y";
+
+Poco::DateTime parseDate(string input) {
+	int timezone = 0;
+	return Poco::DateTimeParser::parse(DATE_FORMAT, input, timezone);
+}
+
 std::vector<CovidData> loadCovidData(const string &filename) {
 	ofxCsv csv;
 	std::vector<CovidData> covidData;
@@ -16,25 +23,21 @@ std::vector<CovidData> loadCovidData(const string &filename) {
 										  CovidData::CaseType::deaths)};
 
 	csv.load(filename);
+	int row = 0;
 	for (auto x : csv) {
-		CovidData::CaseType caseType;
-
-		if (auto it =
-				caseTypeMap.find(x.getString(CovidData::FieldLabel::Case_Type));
-			it != caseTypeMap.end()) {
-			caseType = it->second;
-		} else {
-			ofLog() << "Couldn't find the thing: "
-					<< x.getString(CovidData::FieldLabel::Case_Type);
+		row++;
+		if (row == 1) {
+			// Skip the first row since it's a header row
 			continue;
 		}
-
 		CovidData tmp = CovidData();
 
-		tmp.caseType = caseType;
+		tmp.caseType =
+			caseTypeMap[x.getString(CovidData::FieldLabel::Case_Type)];
+		;
 		tmp.cases = x.getInt(CovidData::FieldLabel::Cases);
 		tmp.difference = x.getInt(CovidData::FieldLabel::Difference);
-		tmp.date = x.getString(CovidData::FieldLabel::Date);
+		tmp.date = parseDate(x.getString(CovidData::FieldLabel::Date));
 		tmp.countryRegion = x.getString(CovidData::FieldLabel::Country_Region);
 		tmp.provinceState = x.getString(CovidData::FieldLabel::Province_State);
 		tmp.admin2 = x.getString(CovidData::FieldLabel::Admin2);

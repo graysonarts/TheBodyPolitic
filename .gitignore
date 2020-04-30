@@ -1,6 +1,7 @@
-bin/bodyProject
+bin/bodyProject*
 bin/*.so
 .vscode
 obj
 bin/BodyProject.app
 bin/data/covid_data.csv
+*~

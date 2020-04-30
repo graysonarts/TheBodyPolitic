@@ -26,7 +26,9 @@ class Particle {
 			randomize();
 		}
 
-		void update() {
+		void update(float size) {
+			scaledSize = size;
+
 			location += velocity * (*parent.speed);
 
 			if (location.x <= scaledSize || location.x >= parent.screenSize->x - scaledSize) {

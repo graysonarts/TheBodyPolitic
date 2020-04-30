@@ -62,13 +62,9 @@ void Covid19::update() {
 		// size = ofMap(growth, -20000, 20000, 10, 200);
 		size += growth;
 		scaledSize = interpolate(ofNormalize(size, 0, 100000));
-
-		// ofLog(OF_LOG_NOTICE)
-		// 	<< growth << " -> " << size << " -> " << scaledSize;
 	}
-  // TODO: move scaled size to particle
-	particle->scaledSize = scaledSize;
-	particle->update();
+
+	particle->update(scaledSize);
 
 	if (index < lastIndex) {
 		ofExit();

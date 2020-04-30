@@ -37,6 +37,10 @@ void Covid19::setup() {
 	ofLog() << "Date Range: " <<
 		Poco::DateTimeFormatter::format(covidData.dateRange.first, DATE_FORMAT) << " to " <<
 		Poco::DateTimeFormatter::format(covidData.dateRange.second, DATE_FORMAT);
+	ofLog() << "Total Dimensions: " << covidData.buckets.size();
+	for(auto entry : covidData.buckets) {
+		ofLog() << entry;
+	}
 	size = 0.f;
 }
 
@@ -59,8 +63,8 @@ void Covid19::update() {
 		size += growth;
 		scaledSize = interpolate(ofNormalize(size, 0, 100000));
 
-		ofLog(OF_LOG_NOTICE)
-			<< growth << " -> " << size << " -> " << scaledSize;
+		// ofLog(OF_LOG_NOTICE)
+		// 	<< growth << " -> " << size << " -> " << scaledSize;
 	}
   // TODO: move scaled size to particle
 	particle->scaledSize = scaledSize;

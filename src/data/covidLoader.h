@@ -7,13 +7,16 @@
 #include <vector>
 #include <map>
 
-typedef std::pair<Poco::DateTime, int> Key; // int  is the FIPS number, not sure how many there are
+typedef int BucketKey; // To make it easier to change in the future
+typedef std::pair<Poco::DateTime, BucketKey> Key; // int  is the FIPS number, not sure how many there are
+typedef std::map<Key, CovidData*> BucketMap; // Bucket Data is a pointer into the data vector
+typedef std::vector<BucketKey> Buckets;
 
 struct LoadedCovidData {
 	std::vector<CovidData> data;
 	std::pair<Poco::DateTime, Poco::DateTime> dateRange;
-	std::map<Key, CovidData*> bucketedData; // Bucket Data is a pointer into the data vector
-	std::vector<int> buckets; // Which buckets exist
+	BucketMap bucketedData;
+	Buckets buckets; // Which buckets exist
 };
 
 LoadedCovidData loadCovidData(const string &filename);

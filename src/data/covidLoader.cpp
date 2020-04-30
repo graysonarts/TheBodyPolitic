@@ -4,6 +4,9 @@
 
 #include <map>
 #include <string>
+#include <algorithm>
+#include <unordered_set>
+#include <tuple>
 
 static string DATE_FORMAT = "%n/%e/%Y";
 
@@ -13,13 +16,19 @@ struct RawCovidData {
 };
 
 RawCovidData _loadRawData(const string &filename);
+std::pair<BucketMap, Buckets> _bucketData(const std::vector<CovidData>& data);
 Poco::DateTime parseDate(const string &input);
 
 LoadedCovidData loadCovidData(const string &filename) {
 	auto data = _loadRawData(filename);
 	sort(data.data.begin(), data.data.end());
 
-	return { data.data, data.dateRange, {} };
+	BucketMap bucketMap;
+	Buckets buckets;
+
+	tie(bucketMap, buckets) = _bucketData(data.data);
+
+	return { data.data, data.dateRange, bucketMap, buckets };
 }
 
 
@@ -78,4 +87,23 @@ RawCovidData _loadRawData(const string &filename) {
 Poco::DateTime parseDate(const string &input) {
 	int timezone = 0;
 	return Poco::DateTimeParser::parse(DATE_FORMAT, input, timezone);
+}
+
+std::pair<BucketMap, Buckets> _bucketData(const std::vector<CovidData>& data) {
+	BucketMap bucketMap;
+	unordered_set<BucketKey> bucketSet;
+
+	for(auto entry : data) {
+		CovidData* item = &entry;
+		BucketKey dimension = item->fips;
+		Poco::DateTime date = item->date;
+
+		bucketMap[make_pair(date, dimension)] = item;
+		bucketSet.insert(dimension);
+	}
+
+	Buckets buckets(bucketSet.cbegin(), bucketSet.cend());
+	sort(buckets.begin(), buckets.end());
+
+	return make_pair(bucketMap, buckets);
 }

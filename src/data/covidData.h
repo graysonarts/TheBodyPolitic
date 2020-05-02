@@ -29,7 +29,7 @@ struct CovidData {
 	CaseType caseType;
 	int cases;
 	int difference;
-	Poco::DateTime date; // TODO: Convert to unix timestamp for sorting
+	Poco::Timestamp date;
 	string countryRegion;
 	string provinceState;
 	string admin2;

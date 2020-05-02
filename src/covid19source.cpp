@@ -5,30 +5,17 @@
 #include <algorithm>
 #include <cmath>
 
-using namespace  std;
+using namespace std;
 
 const string DATA_FILENAME = "covid_data.csv";
 const string SAMPLE_DATA_FILENAME = "covid_sample_data.csv";
 const string DATE_FORMAT = "%Y-%m-%d";
 
-namespace {
-float interpolate(float pct) { return ofMap(pct, 0, 1, 10, 200); }
-} // namespace
-
 void Covid19::setup() {
 	font.load("Montserrat-Medium.ttf", 16);
-	colorSource = new PaletteSource("palettes/MonteCarlo.jpg");
-
-	screenSize = ofGetWindowSize();
-	particlePayload.speed = &speed;
-	particlePayload.screenSize = &screenSize;
-	particlePayload.colorPalette = colorSource;
-
-	particle = new Particle(particlePayload);
 
 	name = "Covid19";
 	allocate(768, 1024);
-	reset();
 
 	ofLog() << "Loading the data";
 	loadCovidCsv();
@@ -38,49 +25,52 @@ void Covid19::setup() {
 		Poco::DateTimeFormatter::format(covidData.dateRange.first, DATE_FORMAT) << " to " <<
 		Poco::DateTimeFormatter::format(covidData.dateRange.second, DATE_FORMAT);
 	ofLog() << "Total Dimensions: " << covidData.buckets.size();
+
+	size = 0.f;
+
+	screenSize = ofGetWindowSize();
+	particlePayload.speed = &speed;
+	particlePayload.screenSize = &screenSize;
+	particlePayload.data = &covidData;
+	// TODO: Build list of palettes to rotate.
+	enumerate_palettes();
+	particlePayload.colorPalette = new PaletteSource("palettes/MonteCarlo.jpg");
+	next_palette();
+
 	for(auto entry : covidData.buckets) {
 		ofLog() << entry;
+		particles.emplace(entry, new Particle(particlePayload, entry));
 	}
-	size = 0.f;
+
+	clock.setup(covidData.dateRange.first, covidData.dateRange.second);
+	reset();
 }
 
 void Covid19::reset() {
-	particle->randomize();
-	ofClear(0.);
+	for (auto p : particles) {
+		p.second->randomize();
+	}
+
+	ofClear(0., 128.f);
 	resetTime = ofGetElapsedTimef();
 }
 
 void Covid19::update() {
-
-	if (ofGetElapsedTimef() - resetTime > 120.f) {
+	bool resetTriggered = clock.update();
+	if (resetTriggered) {
 		reset();
+		next_palette();
 	}
 
-	index = (int)ceil(ofGetFrameNum() * 10.) % covidData.data.size();
-	if (index != lastIndex) {
-		int growth = covidData.data[index].difference;
-		// size = ofMap(growth, -20000, 20000, 10, 200);
-		size += growth;
-		scaledSize = interpolate(ofNormalize(size, 0, 100000));
+	index = clock.index;
 
-		// ofLog(OF_LOG_NOTICE)
-		// 	<< growth << " -> " << size << " -> " << scaledSize;
-	}
-  // TODO: move scaled size to particle
-	particle->scaledSize = scaledSize;
-	particle->update();
-
-	if (index < lastIndex) {
-		ofExit();
+	for(auto particle : particles) {
+		if (resetTriggered) {
+			particle.second->size = 0.;
+		}
+		particle.second->update(clock, index != lastIndex);
 	}
 	lastIndex = index;
-
-	// TODO: Move this to particle
-	glm::ivec2 offset((int)(ofRandom(50) - 25));
-	colorLocation += offset;
-	colorLocation.x = ofWrap(colorLocation.x, 0, colorSource->numColors().x);
-	colorLocation.y = ofWrap(colorLocation.y, 0, colorSource->numColors().y);
-	particle->color = colorSource->getColorAt(colorLocation);
 }
 
 void Covid19::draw() {
@@ -89,21 +79,28 @@ void Covid19::draw() {
 		ofDrawRectangle(0., 0., fbo->getWidth(), fbo->getHeight());
 		ofSetColor(0.);
 		ofDrawRectangle(5., 5., fbo->getWidth() - 10., fbo->getHeight() - 10.);
+	} else {
+		// ofSetColor(0.,1);
+		// ofDrawRectangle(0., 0., fbo->getWidth(), fbo->getHeight());
 	}
 
-	particle->draw();
+	for (auto& particle : particles) {
+		particle.second->draw();
+	}
 
 	auto formattedDate =
-		Poco::DateTimeFormatter::format(covidData.data[index].date, DATE_FORMAT);
+		Poco::DateTimeFormatter::format(clock.currentDate(), DATE_FORMAT);
 
 	ofRectangle textField = font.getStringBoundingBox(
 		formattedDate, fbo->getWidth() / 2.f, fbo->getHeight() / 2.f);
 	textField.scaleFromCenter(2.0f);
 	ofSetColor(0.);
-	ofDrawRectangle(textField);
+	ofDrawRectangle(textField.x, textField.y, textField.width, textField.height);
 	ofSetColor(255.);
 	font.drawString(formattedDate, fbo->getWidth() / 2.f,
 					fbo->getHeight() / 2.f);
+	// font.drawString(to_string(particle->scaledSize), fbo->getWidth() / 2.f, fbo->getHeight() / 2.f + textField.height + 5.f);
+	// font.drawString(to_string(size), fbo->getWidth() / 2.f, fbo->getHeight() / 2.f + textField.height*2 + 10.f);
 }
 
 void Covid19::loadCovidCsv() {
@@ -115,9 +112,31 @@ void Covid19::loadCovidCsv() {
 }
 
 void Covid19::sortDataByDate() {
-	// nop
+ // NOP
 }
 
 void Covid19::onSpeedChange(float &f) { speed = f; }
 
 void Covid19::onDrawChange(bool &b) { clearScreen = !b; }
+
+void Covid19::onTempoChange(float &f) { clock.speed = f; }
+
+void Covid19::enumerate_palettes() {
+	ofLog(OF_LOG_NOTICE) << "Enumerating Palettes";
+	ofDirectory dir("./palettes");
+	dir.allowExt("jpg");
+	dir.listDir();
+
+	for(size_t i =0; i < dir.size(); ++i) {
+		string name = dir.getName(i);
+		ofLog(OF_LOG_NOTICE) << "Palette: " << name;
+		palettes.push_back("palettes/" + name);
+	}
+	selectedPalette = 0;
+}
+
+void Covid19::next_palette() {
+	selectedPalette = (selectedPalette + 1) % palettes.size();
+	ofLog() << "Next palette: " << palettes[selectedPalette];
+	particlePayload.colorPalette->switchSource(palettes[selectedPalette]);
+}

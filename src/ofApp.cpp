@@ -4,18 +4,19 @@
 void ofDisplayApp::setup() {
 	ofxGuiEnableHiResDisplay();
 	showGui = false;
-	speed = speed.set("speed", 5., 1., 10.);
+	speed = speed.set("speed", 1., 1., 10.);
 	drawLine = drawLine.set("clear screen per frame", false);
+	tempo = tempo.set("tempo", 250., 100., 10000.);
 
 	gui.setup("panel");
 	gui.setPosition(1000.0f, 0.f);
 	gui.add(speed);
 	gui.add(drawLine);
-	gui.add(velx);
-	gui.add(vely);
+	gui.add(tempo);
 
 	speed.addListener(&covid19, &Covid19::onSpeedChange);
 	drawLine.addListener(&covid19, &Covid19::onDrawChange);
+	tempo.addListener(&covid19, &Covid19::onTempoChange);
 
 	piMapper.registerFboSource(covid19);
 	piMapper.setup();

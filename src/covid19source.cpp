@@ -11,6 +11,8 @@ const string DATA_FILENAME = "covid_data.csv";
 const string SAMPLE_DATA_FILENAME = "covid_sample_data.csv";
 const string DATE_FORMAT = "%Y-%m-%d";
 
+// #define SINGLE
+
 void Covid19::setup() {
 	font.load("Montserrat-Medium.ttf", 16);
 
@@ -37,8 +39,11 @@ void Covid19::setup() {
 	particlePayload.colorPalette = new PaletteSource("palettes/MonteCarlo.jpg");
 	next_palette();
 
-	// auto entry = "US";
+#ifdef SINGLE
+	auto entry = "US"; {
+#else
 	for(auto entry : covidData.buckets) {
+#endif
 		ofLog() << entry;
 		particles.emplace(entry, new Particle(particlePayload, entry));
 	}

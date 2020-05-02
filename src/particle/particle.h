@@ -20,6 +20,7 @@ class Particle {
 	public:
 		glm::vec2 location;
 		glm::vec2 velocity;
+		glm::vec2 perturbance;
 		ofColor color;
 		glm::vec2 colorLocation;
 		const ParentReference& parent;
@@ -44,9 +45,7 @@ class Particle {
 
 			currentSize = scaledSize + scaledStep * clock.transitionPercentage;
 
-			// ofLog(OF_LOG_NOTICE) << "tP" << clock.transitionPercentage << " cS" << currentSize;
-
-			location += velocity * (*parent.speed);
+			location += velocity * (*parent.speed) + (ofNoise(clock.time / 1000.0f)-0.5) * perturbance;
 
 			if (location.x <= currentSize || location.x >= parent.screenSize->x - currentSize) {
 				velocity.x *= -1;
@@ -98,6 +97,7 @@ class Particle {
 			location.x = ofRandom(parent.screenSize->x);
 			location.y = ofRandom(parent.screenSize->y);
 			velocity = {ofRandom(10.)-5., ofRandom(10.)-5. };
+			perturbance = { ofRandom(10.0), ofRandom(10.0) };
 			glm::vec2 numColors = parent.colorPalette->numColors();
 			colorLocation = {ofRandom(numColors.x), ofRandom(numColors.y)};
 			updateColor();

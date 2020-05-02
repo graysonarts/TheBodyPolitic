@@ -2,4 +2,6 @@
 
 # Addons Required
 
+* [https://github.com/paulvollmer/ofxCsv.git](ofxCsv)
 * [https://github.com/bakercp/ofxTime.git](ofxTime)
+* [https://github.com/danomatika/ofxMidi](ofxMidi)

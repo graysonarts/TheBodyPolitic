@@ -18,6 +18,9 @@ public:
 	void onSpeedChange(float &s);
 	void onTempoChange(float &s);
 	void onDrawChange(bool &b);
+	void onClearChange(bool &b);
+
+	ofTrueTypeFont font;
 
 	ofTrueTypeFont font;
 
@@ -35,6 +38,7 @@ private:
 	float scaledSize = 0.0f;
 	float scaledStep = 0.0f;
 	bool clearScreen = false;
+	bool triggerClear = false;
 
 	void loadCovidCsv();
 	void sortDataByDate();

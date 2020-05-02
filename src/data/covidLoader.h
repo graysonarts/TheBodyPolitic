@@ -17,6 +17,8 @@ struct LoadedCovidData {
 	std::pair<Poco::Timestamp, Poco::Timestamp> dateRange;
 	BucketMap bucketedData;
 	Buckets buckets; // Which buckets exist
+
+	int getDataFor(const Poco::Timestamp &ts, const BucketKey &key);
 };
 
 LoadedCovidData loadCovidData(const string &filename);

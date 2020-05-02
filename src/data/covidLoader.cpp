@@ -117,3 +117,12 @@ string countryOnly(const string& input) {
 	reverse(retval.begin(), retval.end());
 	return retval;
 }
+
+int LoadedCovidData::getDataFor(const Poco::Timestamp &ts, const BucketKey &key) {
+		auto entry = bucketedData.find(make_pair(ts, key));
+		if (entry == bucketedData.end()) {
+			return 0;
+		} else {
+			return entry->second;
+		}
+}

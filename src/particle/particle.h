@@ -18,6 +18,7 @@ class Particle {
 		glm::vec2 colorLocation;
 		const ParentReference& parent;
 		float scaledSize = 1.; // TODO: Update Size
+		float scaledStep = 0.;
 
 		Particle(const ParentReference &parent)
 			: location({0., 0.}), velocity({1., 1.}), colorLocation({1., 1.}), parent(parent)
@@ -27,7 +28,7 @@ class Particle {
 			randomize();
 		}
 
-		void update(float size) {
+		void update(const Clock &clock, float size) {
 			scaledSize = size;
 
 			location += velocity * (*parent.speed);

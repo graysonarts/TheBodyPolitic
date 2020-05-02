@@ -18,6 +18,7 @@ void Covid19::setup() {
 	screenSize = ofGetWindowSize();
 	particlePayload.speed = &speed;
 	particlePayload.screenSize = &screenSize;
+	// TODO: Build list of palettes to rotate.
 	particlePayload.colorPalette = new PaletteSource("palettes/MonteCarlo.jpg");
 
 	name = "Covid19";
@@ -38,6 +39,7 @@ void Covid19::setup() {
 	size = 0.f;
 
 	clock.setup(covidData.dateRange.first, covidData.dateRange.second);
+	clock.speed = 250.;
 	reset();
 }
 
@@ -65,18 +67,14 @@ void Covid19::update() {
 	if (index != lastIndex) {
 		scaledSize = ofMap(size, 0, MAX_CASE_SCALE, 3, 50);
 
-		// TODO: Move this to particle->update()
-		auto entry = covidData.bucketedData.find(make_pair(clock.currentDate(), "US"));
-		if (entry != covidData.bucketedData.end()) {
-			int32_t growth = entry->second;
-			size += growth;
-			float nextScaledSize = ofMap(size, 0, MAX_CASE_SCALE, 3, 50);
-			scaledStep = nextScaledSize - scaledSize;
-		}
+		int32_t growth = covidData.getDataFor(clock.currentDate(), "US");
+		size += growth;
+		float nextScaledSize = ofMap(size, 0, MAX_CASE_SCALE, 3, 50);
+		scaledStep = nextScaledSize - scaledSize;
 	}
 
 	for(auto particle : particles) {
-		particle.second->update(scaledSize + scaledStep * clock.transitionPercentage);
+		particle.second->update(clock, scaledSize + scaledStep * clock.transitionPercentage);
 	}
 	lastIndex = index;
 }

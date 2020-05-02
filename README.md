@@ -31,8 +31,8 @@ _TODO: Add Bio_
 
 This installation is an openframeworks application with ofxPiMapper handling the wrapping for the projection mapping.
 The mannequin was purchased from an architectural salvage store, and the outer layer of paint was stripped off painstakingly
-with a heatgun, scrapper, and lots of time. The images are projected with a KK(need projector information) mounted on a manfrotto
-tripod.
+with a heatgun, scrapper, and lots of time. The images are projected with an Optoma DLP Project mounted on a microphone stand
+with a Manfrotto superclamp.
 
 We load the data downloaded from [data.world](https://data.world/) and store it locally. We then bucket and aggregate along
 the time and country dimensions.

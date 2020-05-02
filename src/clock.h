@@ -14,7 +14,5 @@ class Clock {
 	Poco::Timestamp startDate, endDate;
 	int index, numDays;
 	float transitionPercentage, speed;
-
-	private:
-		float time;
+	float time;
 };

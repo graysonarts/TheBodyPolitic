@@ -3,7 +3,6 @@
 
 //========================================================================
 int main( ){
-	  float scale = 2.0f;
     ofGLWindowSettings settings;
 
     settings.setPosition({0.0f, 0.0f});

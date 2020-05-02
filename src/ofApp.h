@@ -4,9 +4,10 @@
 #include "ofMain.h"
 #include "ofxGui.h"
 #include "ofxPiMapper.h"
+#include "ofxMidi.h"
 #include <string>
 
-class ofDisplayApp : public ofBaseApp {
+class ofDisplayApp : public ofBaseApp, public ofxMidiListener {
 public:
 	void setup();
 	void update();
@@ -17,9 +18,8 @@ public:
 	void mouseDragged(int x, int y, int button);
 	void mousePressed(int x, int y, int button);
 	void mouseReleased(int x, int y, int button);
-
-	ofParameter<float> velx;
-	ofParameter<float> vely;
+	void newMidiMessage(ofxMidiMessage& eventArgs);
+	void exit();
 
 private:
 	ofxPiMapper piMapper;
@@ -28,6 +28,10 @@ private:
 	ofParameter<float> speed;
 	ofParameter<float> tempo;
 	ofParameter<bool> drawLine;
+	ofParameter<bool> clearScreen;
+	ofxMidiIn midiIn;
 
 	Covid19 covid19;
+
+	void onControlChange(int channel, int value);
 };

@@ -10,7 +10,6 @@ using namespace std;
 const string DATA_FILENAME = "covid_data.csv";
 const string SAMPLE_DATA_FILENAME = "covid_sample_data.csv";
 const string DATE_FORMAT = "%Y-%m-%d";
-const float MAX_CASE_SCALE = 500000.f;
 
 void Covid19::setup() {
 	font.load("Montserrat-Medium.ttf", 16);
@@ -26,10 +25,7 @@ void Covid19::setup() {
 		Poco::DateTimeFormatter::format(covidData.dateRange.first, DATE_FORMAT) << " to " <<
 		Poco::DateTimeFormatter::format(covidData.dateRange.second, DATE_FORMAT);
 	ofLog() << "Total Dimensions: " << covidData.buckets.size();
-	for(auto entry : covidData.buckets) {
-		ofLog() << entry;
-		particles.emplace(entry, new Particle(particlePayload));
-	}
+
 	size = 0.f;
 
 	screenSize = ofGetWindowSize();
@@ -38,6 +34,11 @@ void Covid19::setup() {
 	particlePayload.data = &covidData;
 	// TODO: Build list of palettes to rotate.
 	particlePayload.colorPalette = new PaletteSource("palettes/MonteCarlo.jpg");
+
+	for(auto entry : covidData.buckets) {
+		ofLog() << entry;
+		particles.emplace(entry, new Particle(particlePayload, entry));
+	}
 
 	clock.setup(covidData.dateRange.first, covidData.dateRange.second);
 	clock.speed = 250.;
@@ -54,9 +55,10 @@ void Covid19::reset() {
 }
 
 void Covid19::update() {
-	if (clock.update()) {
+	bool resetTriggered = clock.update();
+	if (resetTriggered) {
 		ofClear(0.);
-		size = 0.;
+		// Next Color Palette
 		// ofExit();
 	}
 
@@ -65,17 +67,12 @@ void Covid19::update() {
 	}
 
 	index = clock.index;
-	if (index != lastIndex) {
-		scaledSize = ofMap(size, 0, MAX_CASE_SCALE, 3, 50);
-
-		int32_t growth = covidData.getDataFor(clock.currentDate(), "US");
-		size += growth;
-		float nextScaledSize = ofMap(size, 0, MAX_CASE_SCALE, 3, 50);
-		scaledStep = nextScaledSize - scaledSize;
-	}
 
 	for(auto particle : particles) {
-		particle.second->update(clock, scaledSize + scaledStep * clock.transitionPercentage);
+		if (resetTriggered) {
+			particle.second->size = 0.;
+		}
+		particle.second->update(clock, index != lastIndex);
 	}
 	lastIndex = index;
 }

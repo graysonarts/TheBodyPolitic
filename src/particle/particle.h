@@ -5,6 +5,8 @@
 #include "../data/covidLoader.h"
 #include "../clock.h"
 
+const float MAX_CASE_SCALE = 500000.f;
+
 struct ParentReference {
 	float *speed;
 	PaletteSource *colorPalette;
@@ -21,27 +23,41 @@ class Particle {
 		const ParentReference& parent;
 		float scaledSize = 1.; // TODO: Update Size
 		float scaledStep = 0.;
+		float size = 0.;
+		BucketKey key;
 
-		Particle(const ParentReference &parent)
-			: location({0., 0.}), velocity({1., 1.}), colorLocation({1., 1.}), parent(parent)
+		Particle(const ParentReference &parent, const BucketKey &key)
+			: location({0., 0.}), velocity({1., 1.}), colorLocation({1., 1.}), parent(parent), key(key)
 		{ updateColor(); }
 
 		void setup() {
 			randomize();
 		}
 
-		void update(const Clock &clock, float size) {
-			scaledSize = size;
+		void update(const Clock &clock, bool transitioned) {
+			if (transitioned)
+				calculateSize(clock);
+
+			float currentSize = scaledSize + scaledStep * clock.transitionPercentage;
 
 			location += velocity * (*parent.speed);
 
-			if (location.x <= scaledSize || location.x >= parent.screenSize->x - scaledSize) {
+			if (location.x <= scaledSize || location.x >= parent.screenSize->x - currentSize) {
 				velocity.x *= -1;
 			}
 
-			if (location.y <= scaledSize || location.y >= parent.screenSize->y - scaledSize) {
+			if (location.y <= scaledSize || location.y >= parent.screenSize->y - currentSize) {
 				velocity.y *= -1;
 			}
+		}
+
+		void calculateSize(const Clock &clock) {
+			scaledSize = ofMap(size, 0, MAX_CASE_SCALE, 3, 50);
+
+			int32_t growth = parent.data->getDataFor(clock.currentDate(), key);
+			size += growth;
+			float nextScaledSize = ofMap(size, 0, MAX_CASE_SCALE, 3, 50);
+			scaledStep = nextScaledSize - scaledSize;
 		}
 
 		void draw() const {

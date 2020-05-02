@@ -2,12 +2,14 @@
 
 #include "ofMain.h"
 #include "../palette/palette.h"
+#include "../data/covidLoader.h"
 #include "../clock.h"
 
 struct ParentReference {
 	float *speed;
 	PaletteSource *colorPalette;
 	glm::vec2 *screenSize;
+	LoadedCovidData *data;
 };
 
 class Particle {

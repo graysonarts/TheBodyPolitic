@@ -15,12 +15,6 @@ const float MAX_CASE_SCALE = 500000.f;
 void Covid19::setup() {
 	font.load("Montserrat-Medium.ttf", 16);
 
-	screenSize = ofGetWindowSize();
-	particlePayload.speed = &speed;
-	particlePayload.screenSize = &screenSize;
-	// TODO: Build list of palettes to rotate.
-	particlePayload.colorPalette = new PaletteSource("palettes/MonteCarlo.jpg");
-
 	name = "Covid19";
 	allocate(768, 1024);
 
@@ -37,6 +31,13 @@ void Covid19::setup() {
 		particles.emplace(entry, new Particle(particlePayload));
 	}
 	size = 0.f;
+
+	screenSize = ofGetWindowSize();
+	particlePayload.speed = &speed;
+	particlePayload.screenSize = &screenSize;
+	particlePayload.data = &covidData;
+	// TODO: Build list of palettes to rotate.
+	particlePayload.colorPalette = new PaletteSource("palettes/MonteCarlo.jpg");
 
 	clock.setup(covidData.dateRange.first, covidData.dateRange.second);
 	clock.speed = 250.;

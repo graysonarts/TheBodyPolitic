@@ -29,6 +29,8 @@ void ofDisplayApp::draw() {
 	piMapper.draw();
 	if (showGui)
 		gui.draw();
+
+	covid19.font.drawString(to_string(ofGetFrameRate()), 10., 10.);
 }
 
 void ofDisplayApp::keyPressed(int key) {

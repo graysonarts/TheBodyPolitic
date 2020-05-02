@@ -41,7 +41,6 @@ void Covid19::setup() {
 	}
 
 	clock.setup(covidData.dateRange.first, covidData.dateRange.second);
-	clock.speed = 250.;
 	reset();
 }
 
@@ -57,7 +56,7 @@ void Covid19::reset() {
 void Covid19::update() {
 	bool resetTriggered = clock.update();
 	if (resetTriggered) {
-		ofClear(0.);
+		// ofClear(0.);
 		// Next Color Palette
 		// ofExit();
 	}

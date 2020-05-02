@@ -15,10 +15,10 @@ public:
 	void update();
 	void draw();
 	void reset();
-
-public:
 	void onSpeedChange(float &s);
 	void onDrawChange(bool &b);
+
+	ofTrueTypeFont font;
 
 private:
 	glm::vec2 screenSize;
@@ -29,7 +29,6 @@ private:
 	float scaledSize = 0.0f;
 	float scaledStep = 0.0f;
 	bool clearScreen = true;
-	ofTrueTypeFont font;
 
 	void loadCovidCsv();
 	void sortDataByDate();

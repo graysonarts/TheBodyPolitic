@@ -5,7 +5,7 @@
 #include "../data/covidLoader.h"
 #include "../clock.h"
 
-const float MAX_CASE_SCALE = 500000.f;
+const float MAX_CASE_SCALE = 100000.f;
 
 struct ParentReference {
 	float *speed;

@@ -12,7 +12,7 @@ const string SAMPLE_DATA_FILENAME = "covid_sample_data.csv";
 const string DATE_FORMAT = "%Y-%m-%d";
 
 namespace {
-float interpolate(float pct) { return ofMap(pct, 0, 1, 10, 200); }
+float interpolate(Clock &clock, float pct) { return ofMap(pct, 0, 1, 10, 200) * clock.transitionPercentage; }
 } // namespace
 
 void Covid19::setup() {
@@ -40,17 +40,26 @@ void Covid19::setup() {
 	ofLog() << "Total Dimensions: " << covidData.buckets.size();
 	for(auto entry : covidData.buckets) {
 		ofLog() << entry;
+		particles.emplace(entry, new Particle(particlePayload));
 	}
 	size = 0.f;
+
+	clock.setup(covidData.dateRange.first, covidData.dateRange.second);
 }
 
 void Covid19::reset() {
-	particle->randomize();
-	ofClear(0.);
+	for (auto p : particles) {
+		p.second->randomize();
+	}
+
+	// ofClear(0.);
 	resetTime = ofGetElapsedTimef();
 }
 
 void Covid19::update() {
+	if (clock.update()) {
+		ofExit();
+	}
 
 	if (ofGetElapsedTimef() - resetTime > 120.f) {
 		reset();
@@ -61,14 +70,10 @@ void Covid19::update() {
 		int growth = covidData.data[index].difference;
 		// size = ofMap(growth, -20000, 20000, 10, 200);
 		size += growth;
-		scaledSize = interpolate(ofNormalize(size, 0, 100000));
+		scaledSize = interpolate(clock, ofNormalize(size, 0, 100000));
 	}
 
 	particle->update(scaledSize);
-
-	if (index < lastIndex) {
-		ofExit();
-	}
 	lastIndex = index;
 
 	// TODO: Move this to particle
@@ -90,7 +95,7 @@ void Covid19::draw() {
 	particle->draw();
 
 	auto formattedDate =
-		Poco::DateTimeFormatter::format(covidData.data[index].date, DATE_FORMAT);
+		Poco::DateTimeFormatter::format(clock.currentDate(), DATE_FORMAT);
 
 	ofRectangle textField = font.getStringBoundingBox(
 		formattedDate, fbo->getWidth() / 2.f, fbo->getHeight() / 2.f);

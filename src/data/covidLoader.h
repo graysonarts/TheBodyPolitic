@@ -14,7 +14,7 @@ typedef std::vector<BucketKey> Buckets;
 
 struct LoadedCovidData {
 	std::vector<CovidData> data;
-	std::pair<Poco::DateTime, Poco::DateTime> dateRange;
+	std::pair<Poco::Timestamp, Poco::Timestamp> dateRange;
 	BucketMap bucketedData;
 	Buckets buckets; // Which buckets exist
 };

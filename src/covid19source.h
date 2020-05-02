@@ -3,8 +3,11 @@
 #include "FboSource.h"
 #include "covidLoader.h"
 #include "ofMain.h"
+#include "clock.h"
 #include "palette/palette.h"
 #include "particle/particle.h"
+
+#include <map>
 
 class Covid19 : public ofx::piMapper::FboSource {
 public:
@@ -32,7 +35,10 @@ private:
 	void sortDataByDate();
 	LoadedCovidData covidData;
 	int index, lastIndex;
+	Clock clock;
 
 	ParentReference particlePayload;
 	Particle *particle;
+
+	std::map<BucketKey, Particle*> particles;
 };

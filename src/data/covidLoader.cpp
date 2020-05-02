@@ -12,12 +12,12 @@ static string DATE_FORMAT = "%n/%e/%Y";
 
 struct RawCovidData {
 	std::vector<CovidData> data;
-	std::pair<Poco::DateTime, Poco::DateTime> dateRange;
+	std::pair<Poco::Timestamp, Poco::Timestamp> dateRange;
 };
 
 RawCovidData _loadRawData(const string &filename);
 std::pair<BucketMap, Buckets> _bucketData(const std::vector<CovidData>& data);
-Poco::DateTime parseDate(const string &input);
+Poco::Timestamp parseDate(const string &input);
 string countryOnly(const string &input);
 
 LoadedCovidData loadCovidData(const string &filename) {
@@ -35,8 +35,8 @@ LoadedCovidData loadCovidData(const string &filename) {
 RawCovidData _loadRawData(const string &filename) {
 	ofxCsv csv;
 	std::vector<CovidData> covidData;
-	Poco::DateTime earliestDate(3000, 12, 31)
-							 , latestDate(1990, 1, 1);
+	Poco::Timestamp earliestDate(INT64_MAX)
+							  , latestDate(0);
 
 	map<string, CovidData::CaseType> caseTypeMap{
 		pair<string, CovidData::CaseType>("Confirmed",
@@ -79,14 +79,14 @@ RawCovidData _loadRawData(const string &filename) {
 		covidData.push_back(tmp);
 	}
 
-	pair<Poco::DateTime, Poco::DateTime> dateRange(earliestDate, latestDate);
+	pair<Poco::Timestamp, Poco::Timestamp> dateRange(earliestDate, latestDate);
 
 	return { covidData, dateRange };
 }
 
-Poco::DateTime parseDate(const string &input) {
+Poco::Timestamp parseDate(const string &input) {
 	int timezone = 0;
-	return Poco::DateTimeParser::parse(DATE_FORMAT, input, timezone);
+	return Poco::DateTimeParser::parse(DATE_FORMAT, input, timezone).timestamp();
 }
 
 std::pair<BucketMap, Buckets> _bucketData(const std::vector<CovidData>& data) {

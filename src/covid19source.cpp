@@ -84,8 +84,8 @@ void Covid19::draw() {
 		ofSetColor(0.);
 		ofDrawRectangle(5., 5., fbo->getWidth() - 10., fbo->getHeight() - 10.);
 	} else {
-		// ofSetColor(0., 1.);
-		// ofDrawRectangle(0, 0, fbo->getWidth(), fbo->getHeight());
+		ofSetColor(0., 5.);
+		ofDrawRectangle(0, 0, fbo->getWidth(), fbo->getHeight());
 	}
 
 	if (resetTriggered) {

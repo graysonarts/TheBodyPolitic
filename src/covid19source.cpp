@@ -37,6 +37,7 @@ void Covid19::setup() {
 	particlePayload.colorPalette = new PaletteSource("palettes/MonteCarlo.jpg");
 	next_palette();
 
+	// auto entry = "US";
 	for(auto entry : covidData.buckets) {
 		ofLog() << entry;
 		particles.emplace(entry, new Particle(particlePayload, entry));
@@ -82,6 +83,9 @@ void Covid19::draw() {
 		ofDrawRectangle(0., 0., fbo->getWidth(), fbo->getHeight());
 		ofSetColor(0.);
 		ofDrawRectangle(5., 5., fbo->getWidth() - 10., fbo->getHeight() - 10.);
+	} else {
+		// ofSetColor(0., 1.);
+		// ofDrawRectangle(0, 0, fbo->getWidth(), fbo->getHeight());
 	}
 
 	if (resetTriggered) {

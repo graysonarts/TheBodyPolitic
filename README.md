@@ -4,4 +4,4 @@
 
 * [https://github.com/paulvollmer/ofxCsv.git](ofxCsv)
 * [https://github.com/bakercp/ofxTime.git](ofxTime)
-* [https://github.com/danomatika/ofxMidi](ofxMidi)
+* [https://github.com/danomatika/ofxMidi.git](ofxMidi)

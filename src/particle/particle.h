@@ -25,7 +25,9 @@ class Particle {
 		const ParentReference& parent;
 		float scaledSize = 1.; // TODO: Update Size
 		float scaledStep = 0.;
+		float currentSize = 0.;
 		float size = 0.;
+		bool dayWasZero = false;
 		BucketKey key;
 
 		Particle(const ParentReference &parent, const BucketKey &key)
@@ -40,25 +42,33 @@ class Particle {
 			if (transitioned)
 				calculateSize(clock);
 
-			float currentSize = scaledSize + scaledStep * clock.transitionPercentage;
+			currentSize = scaledSize + scaledStep * clock.transitionPercentage;
+
+			// ofLog(OF_LOG_NOTICE) << "tP" << clock.transitionPercentage << " cS" << currentSize;
 
 			location += velocity * (*parent.speed);
 
-			if (location.x <= scaledSize || location.x >= parent.screenSize->x - currentSize) {
+			if (location.x <= currentSize || location.x >= parent.screenSize->x - currentSize) {
 				velocity.x *= -1;
 			}
 
-			if (location.y <= scaledSize || location.y >= parent.screenSize->y - currentSize) {
+			if (location.y <= currentSize || location.y >= parent.screenSize->y - currentSize) {
 				velocity.y *= -1;
 			}
+
+			location.x = ofClamp(location.x, currentSize, parent.screenSize->x - currentSize);
+			location.y = ofClamp(location.y, currentSize, parent.screenSize->y - currentSize);
 
 			cycleColor();
 		}
 
 		void calculateSize(const Clock &clock) {
+			float oldScaledSize = scaledSize + scaledStep * clock.transitionPercentage;;
 			scaledSize = ofMap(size, 0, MAX_CASE_SCALE, MIN_SIZE, MAX_SIZE);
+			// ofLog(OF_LOG_NOTICE) << "CS: " << oldScaledSize << " == " << scaledSize;
 
 			int32_t growth = parent.data->getDataFor(clock.currentDate(), key);
+			dayWasZero = growth == 0;
 			size += growth;
 			float nextScaledSize = ofMap(size, 0, MAX_CASE_SCALE, MIN_SIZE, MAX_SIZE);
 			scaledStep = nextScaledSize - scaledSize;
@@ -74,10 +84,17 @@ class Particle {
 
 		void draw() const {
 			ofSetColor(color, 200.f);
-			ofDrawCircle(location.x, location.y, scaledSize);
+			ofDrawCircle(location.x, location.y, currentSize);
+			if (dayWasZero) {
+				ofSetColor(ofColor::red);
+				ofRectangle(location.x, location.y, 25, 25);
+			}
 		}
 
 		void randomize() {
+			// location.x = parent.screenSize->x /2 - 25;
+			// location.y =parent.screenSize->y / 2 - 25;
+			// velocity = {0,0};
 			location.x = ofRandom(parent.screenSize->x);
 			location.y = ofRandom(parent.screenSize->y);
 			velocity = {ofRandom(10.)-5., ofRandom(10.)-5. };

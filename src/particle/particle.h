@@ -73,7 +73,7 @@ class Particle {
 		}
 
 		void draw() const {
-			ofSetColor(color);
+			ofSetColor(color, 200.f);
 			ofDrawCircle(location.x, location.y, scaledSize);
 		}
 

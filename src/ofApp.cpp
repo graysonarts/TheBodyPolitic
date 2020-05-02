@@ -65,6 +65,9 @@ void ofDisplayApp::onControlChange(int control, int value) {
 		case 44: // Record Button
 			showGui = value > 64;
 			break;
+		case 48: // Next Button (next palette)
+			if (value > 64) ofNotifyEvent(covid19.onNextPalette);
+			break;
 		case 49: // Loop Button
 			clearScreen = value > 64;
 			break;

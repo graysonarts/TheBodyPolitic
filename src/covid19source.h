@@ -22,11 +22,15 @@ public:
 
 	ofTrueTypeFont font;
 
+	ofEvent<void> onNextPalette;
+
 private:
 	void enumerate_palettes();
 	void next_palette();
 	std::vector<string> palettes;
 	int selectedPalette;
+
+	void handleNextPaletteEvent();
 
 	glm::vec2 screenSize;
 	glm::ivec2 colorLocation;
@@ -37,6 +41,7 @@ private:
 	float scaledStep = 0.0f;
 	bool clearScreen = false;
 	bool triggerClear = false;
+	bool resetTriggered = false;
 
 	void loadCovidCsv();
 	void sortDataByDate();

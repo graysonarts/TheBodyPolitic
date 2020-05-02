@@ -4,17 +4,40 @@
 
 #include <map>
 #include <string>
+#include <algorithm>
+#include <unordered_set>
+#include <tuple>
 
 static string DATE_FORMAT = "%n/%e/%Y";
 
-Poco::DateTime parseDate(string input) {
-	int timezone = 0;
-	return Poco::DateTimeParser::parse(DATE_FORMAT, input, timezone);
+struct RawCovidData {
+	std::vector<CovidData> data;
+	std::pair<Poco::DateTime, Poco::DateTime> dateRange;
+};
+
+RawCovidData _loadRawData(const string &filename);
+std::pair<BucketMap, Buckets> _bucketData(const std::vector<CovidData>& data);
+Poco::DateTime parseDate(const string &input);
+string countryOnly(const string &input);
+
+LoadedCovidData loadCovidData(const string &filename) {
+	auto data = _loadRawData(filename);
+	sort(data.data.begin(), data.data.end());
+
+	BucketMap bucketMap;
+	Buckets buckets;
+
+	tie(bucketMap, buckets) = _bucketData(data.data);
+
+	return { data.data, data.dateRange, bucketMap, buckets };
 }
 
-std::vector<CovidData> loadCovidData(const string &filename) {
+
+RawCovidData _loadRawData(const string &filename) {
 	ofxCsv csv;
 	std::vector<CovidData> covidData;
+	Poco::DateTime earliestDate(3000, 12, 31)
+							 , latestDate(1990, 1, 1);
 
 	map<string, CovidData::CaseType> caseTypeMap{
 		pair<string, CovidData::CaseType>("Confirmed",
@@ -46,8 +69,52 @@ std::vector<CovidData> loadCovidData(const string &filename) {
 		tmp.latitude = x.getFloat(CovidData::FieldLabel::Lat);
 		tmp.longitude = x.getFloat(CovidData::FieldLabel::Long);
 
+		if (tmp.date < earliestDate) {
+			earliestDate = tmp.date;
+		}
+
+		if (tmp.date > latestDate) {
+			latestDate = tmp.date;
+		}
+
 		covidData.push_back(tmp);
 	}
 
-	return covidData;
+	pair<Poco::DateTime, Poco::DateTime> dateRange(earliestDate, latestDate);
+
+	return { covidData, dateRange };
+}
+
+Poco::DateTime parseDate(const string &input) {
+	int timezone = 0;
+	return Poco::DateTimeParser::parse(DATE_FORMAT, input, timezone);
+}
+
+std::pair<BucketMap, Buckets> _bucketData(const std::vector<CovidData>& data) {
+	BucketMap bucketMap;
+	unordered_set<BucketKey> bucketSet;
+
+	for(auto &entry : data) {
+		int32_t item = entry.difference;
+		BucketKey dimension = countryOnly(entry.countryRegion);
+		Poco::DateTime date = entry.date;
+
+		bucketMap[make_pair(date, dimension)] += item;
+		bucketSet.insert(dimension);
+	}
+
+	Buckets buckets(bucketSet.cbegin(), bucketSet.cend());
+	sort(buckets.begin(), buckets.end());
+
+	return make_pair(bucketMap, buckets);
+}
+
+string countryOnly(const string& input) {
+	auto last_comma = find_if(input.crbegin(), input.crend(), [](auto c) { return c == ','; });
+	if (last_comma == input.crend()) return input;
+
+	--last_comma; // Skip space, it's -- because it's a reverse iterator...
+	string retval(input.crbegin(), last_comma);
+	reverse(retval.begin(), retval.end());
+	return retval;
 }

@@ -26,6 +26,7 @@ private:
 	ofxPanel gui;
 	bool showGui;
 	ofParameter<float> speed;
+	ofParameter<float> tempo;
 	ofParameter<bool> drawLine;
 
 	Covid19 covid19;

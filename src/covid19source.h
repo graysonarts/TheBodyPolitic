@@ -16,6 +16,7 @@ public:
 	void draw();
 	void reset();
 	void onSpeedChange(float &s);
+	void onTempoChange(float &s);
 	void onDrawChange(bool &b);
 
 	ofTrueTypeFont font;

@@ -96,7 +96,7 @@ std::pair<BucketMap, Buckets> _bucketData(const std::vector<CovidData>& data) {
 	for(auto &entry : data) {
 		int32_t item = entry.difference;
 		BucketKey dimension = countryOnly(entry.countryRegion);
-		Poco::DateTime date = entry.date;
+		Poco::Timestamp date = entry.date;
 
 		bucketMap[make_pair(date, dimension)] += item;
 		bucketSet.insert(dimension);

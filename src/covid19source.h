@@ -27,6 +27,7 @@ private:
 	float resetTime;
 	float size = 20.0f;
 	float scaledSize = 0.0f;
+	float scaledStep = 0.0f;
 	bool clearScreen = true;
 	PaletteSource *colorSource;
 	ofTrueTypeFont font;

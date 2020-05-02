@@ -10,10 +10,7 @@ using namespace  std;
 const string DATA_FILENAME = "covid_data.csv";
 const string SAMPLE_DATA_FILENAME = "covid_sample_data.csv";
 const string DATE_FORMAT = "%Y-%m-%d";
-
-namespace {
-float interpolate(Clock &clock, float pct) { return ofMap(pct, 0, 1, 10, 200) * clock.transitionPercentage; }
-} // namespace
+const float MAX_CASE_SCALE = 100000.f;
 
 void Covid19::setup() {
 	font.load("Montserrat-Medium.ttf", 16);
@@ -28,7 +25,6 @@ void Covid19::setup() {
 
 	name = "Covid19";
 	allocate(768, 1024);
-	reset();
 
 	ofLog() << "Loading the data";
 	loadCovidCsv();
@@ -45,12 +41,14 @@ void Covid19::setup() {
 	size = 0.f;
 
 	clock.setup(covidData.dateRange.first, covidData.dateRange.second);
+	reset();
 }
 
 void Covid19::reset() {
 	for (auto p : particles) {
 		p.second->randomize();
 	}
+	particle->randomize();
 
 	// ofClear(0.);
 	resetTime = ofGetElapsedTimef();
@@ -58,22 +56,29 @@ void Covid19::reset() {
 
 void Covid19::update() {
 	if (clock.update()) {
-		ofExit();
+		ofClear(0.);
+		size = 0.;
+		// ofExit();
 	}
 
 	if (ofGetElapsedTimef() - resetTime > 120.f) {
 		reset();
 	}
 
-	index = (int)ceil(ofGetFrameNum() * 10.) % covidData.data.size();
+	index = clock.index;
 	if (index != lastIndex) {
-		int growth = covidData.data[index].difference;
-		// size = ofMap(growth, -20000, 20000, 10, 200);
-		size += growth;
-		scaledSize = interpolate(clock, ofNormalize(size, 0, 100000));
+		scaledSize = ofMap(size, 0, MAX_CASE_SCALE, 3, 50);
+
+		auto entry = covidData.bucketedData.find(make_pair(clock.currentDate(), "US"));
+		if (entry != covidData.bucketedData.end()) {
+			int32_t growth = entry->second;
+			size += growth;
+			float nextScaledSize = ofMap(size, 0, MAX_CASE_SCALE, 3, 50);
+			scaledStep = nextScaledSize - scaledSize;
+		}
 	}
 
-	particle->update(scaledSize);
+	particle->update(scaledSize + scaledStep * clock.transitionPercentage);
 	lastIndex = index;
 
 	// TODO: Move this to particle
@@ -101,10 +106,12 @@ void Covid19::draw() {
 		formattedDate, fbo->getWidth() / 2.f, fbo->getHeight() / 2.f);
 	textField.scaleFromCenter(2.0f);
 	ofSetColor(0.);
-	ofDrawRectangle(textField);
+	ofDrawRectangle(textField.x, textField.y, textField.width, textField.height*3 + 10.);
 	ofSetColor(255.);
 	font.drawString(formattedDate, fbo->getWidth() / 2.f,
 					fbo->getHeight() / 2.f);
+	font.drawString(to_string(particle->scaledSize), fbo->getWidth() / 2.f, fbo->getHeight() / 2.f + textField.height + 5.f);
+	font.drawString(to_string(size), fbo->getWidth() / 2.f, fbo->getHeight() / 2.f + textField.height*2 + 10.f);
 }
 
 void Covid19::loadCovidCsv() {

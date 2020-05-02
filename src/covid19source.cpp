@@ -84,6 +84,11 @@ void Covid19::draw() {
 		// ofDrawRectangle(0., 0., fbo->getWidth(), fbo->getHeight());
 	}
 
+	if (triggerClear) {
+		triggerClear = false;
+		ofClear(0.);
+	}
+
 	for (auto& particle : particles) {
 		particle.second->draw();
 	}
@@ -120,6 +125,8 @@ void Covid19::onSpeedChange(float &f) { speed = f; }
 void Covid19::onDrawChange(bool &b) { clearScreen = !b; }
 
 void Covid19::onTempoChange(float &f) { clock.speed = f; }
+
+void Covid19::onClearChange(bool &b) { triggerClear = b; }
 
 void Covid19::enumerate_palettes() {
 	ofLog(OF_LOG_NOTICE) << "Enumerating Palettes";

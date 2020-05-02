@@ -11,4 +11,5 @@ class PaletteSource {
 
 	private:
 		ofImage *source;
+
 };

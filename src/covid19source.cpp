@@ -33,7 +33,9 @@ void Covid19::setup() {
 	particlePayload.screenSize = &screenSize;
 	particlePayload.data = &covidData;
 	// TODO: Build list of palettes to rotate.
+	enumerate_palettes();
 	particlePayload.colorPalette = new PaletteSource("palettes/MonteCarlo.jpg");
+	next_palette();
 
 	for(auto entry : covidData.buckets) {
 		ofLog() << entry;
@@ -49,16 +51,14 @@ void Covid19::reset() {
 		p.second->randomize();
 	}
 
-	// ofClear(0.);
+	ofClear(0., 128.f);
 	resetTime = ofGetElapsedTimef();
 }
 
 void Covid19::update() {
 	bool resetTriggered = clock.update();
 	if (resetTriggered) {
-		// ofClear(0.);
-		// Next Color Palette
-		// ofExit();
+		next_palette();
 	}
 
 	if (ofGetElapsedTimef() - resetTime > 120.f) {
@@ -83,8 +83,8 @@ void Covid19::draw() {
 		ofSetColor(0.);
 		ofDrawRectangle(5., 5., fbo->getWidth() - 10., fbo->getHeight() - 10.);
 	} else {
-		ofSetColor(0.,5);
-		ofDrawRectangle(0., 0., fbo->getWidth(), fbo->getHeight());
+		// ofSetColor(0.,1);
+		// ofDrawRectangle(0., 0., fbo->getWidth(), fbo->getHeight());
 	}
 
 	for (auto& particle : particles) {
@@ -98,12 +98,12 @@ void Covid19::draw() {
 		formattedDate, fbo->getWidth() / 2.f, fbo->getHeight() / 2.f);
 	textField.scaleFromCenter(2.0f);
 	ofSetColor(0.);
-	ofDrawRectangle(textField.x, textField.y, textField.width, textField.height*3 + 10.);
+	ofDrawRectangle(textField.x, textField.y, textField.width, textField.height);
 	ofSetColor(255.);
 	font.drawString(formattedDate, fbo->getWidth() / 2.f,
 					fbo->getHeight() / 2.f);
 	// font.drawString(to_string(particle->scaledSize), fbo->getWidth() / 2.f, fbo->getHeight() / 2.f + textField.height + 5.f);
-	font.drawString(to_string(size), fbo->getWidth() / 2.f, fbo->getHeight() / 2.f + textField.height*2 + 10.f);
+	// font.drawString(to_string(size), fbo->getWidth() / 2.f, fbo->getHeight() / 2.f + textField.height*2 + 10.f);
 }
 
 void Covid19::loadCovidCsv() {
@@ -121,3 +121,23 @@ void Covid19::sortDataByDate() {
 void Covid19::onSpeedChange(float &f) { speed = f; }
 
 void Covid19::onDrawChange(bool &b) { clearScreen = !b; }
+
+void Covid19::enumerate_palettes() {
+	ofLog(OF_LOG_NOTICE) << "Enumerating Palettes";
+	ofDirectory dir("./palettes");
+	dir.allowExt("jpg");
+	dir.listDir();
+
+	for(size_t i =0; i < dir.size(); ++i) {
+		string name = dir.getName(i);
+		ofLog(OF_LOG_NOTICE) << "Palette: " << name;
+		palettes.push_back("palettes/" + name);
+	}
+	selectedPalette = 0;
+}
+
+void Covid19::next_palette() {
+	selectedPalette = (selectedPalette + 1) % palettes.size();
+	ofLog() << "Next palette: " << palettes[selectedPalette];
+	particlePayload.colorPalette->switchSource(palettes[selectedPalette]);
+}

@@ -6,6 +6,8 @@
 #include "../clock.h"
 
 const float MAX_CASE_SCALE = 100000.f;
+const float MAX_SIZE = 50.f;
+const float MIN_SIZE = 1.f;
 
 struct ParentReference {
 	float *speed;
@@ -52,11 +54,11 @@ class Particle {
 		}
 
 		void calculateSize(const Clock &clock) {
-			scaledSize = ofMap(size, 0, MAX_CASE_SCALE, 3, 50);
+			scaledSize = ofMap(size, 0, MAX_CASE_SCALE, MIN_SIZE, MAX_SIZE);
 
 			int32_t growth = parent.data->getDataFor(clock.currentDate(), key);
 			size += growth;
-			float nextScaledSize = ofMap(size, 0, MAX_CASE_SCALE, 3, 50);
+			float nextScaledSize = ofMap(size, 0, MAX_CASE_SCALE, MIN_SIZE, MAX_SIZE);
 			scaledStep = nextScaledSize - scaledSize;
 		}
 

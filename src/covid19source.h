@@ -21,6 +21,11 @@ public:
 	ofTrueTypeFont font;
 
 private:
+	void enumerate_palettes();
+	void next_palette();
+	std::vector<string> palettes;
+	int selectedPalette;
+
 	glm::vec2 screenSize;
 	glm::ivec2 colorLocation;
 	float speed = 1.0f;
@@ -28,7 +33,7 @@ private:
 	float size = 20.0f;
 	float scaledSize = 0.0f;
 	float scaledStep = 0.0f;
-	bool clearScreen = true;
+	bool clearScreen = false;
 
 	void loadCovidCsv();
 	void sortDataByDate();

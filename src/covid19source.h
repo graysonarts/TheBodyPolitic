@@ -22,8 +22,6 @@ public:
 
 	ofTrueTypeFont font;
 
-	ofTrueTypeFont font;
-
 private:
 	void enumerate_palettes();
 	void next_palette();

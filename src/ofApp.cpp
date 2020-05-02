@@ -4,7 +4,7 @@
 void ofDisplayApp::setup() {
 	ofxGuiEnableHiResDisplay();
 	showGui = false;
-	speed = speed.set("speed", 5., 1., 10.);
+	speed = speed.set("speed", 1., 1., 10.);
 	drawLine = drawLine.set("clear screen per frame", false);
 
 	gui.setup("panel");

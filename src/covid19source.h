@@ -29,7 +29,6 @@ private:
 	float scaledSize = 0.0f;
 	float scaledStep = 0.0f;
 	bool clearScreen = true;
-	PaletteSource *colorSource;
 	ofTrueTypeFont font;
 
 	void loadCovidCsv();
@@ -39,7 +38,6 @@ private:
 	Clock clock;
 
 	ParentReference particlePayload;
-	Particle *particle;
 
 	std::map<BucketKey, Particle*> particles;
 };

@@ -5,23 +5,20 @@
 #include <algorithm>
 #include <cmath>
 
-using namespace  std;
+using namespace std;
 
 const string DATA_FILENAME = "covid_data.csv";
 const string SAMPLE_DATA_FILENAME = "covid_sample_data.csv";
 const string DATE_FORMAT = "%Y-%m-%d";
-const float MAX_CASE_SCALE = 100000.f;
+const float MAX_CASE_SCALE = 500000.f;
 
 void Covid19::setup() {
 	font.load("Montserrat-Medium.ttf", 16);
-	colorSource = new PaletteSource("palettes/MonteCarlo.jpg");
 
 	screenSize = ofGetWindowSize();
 	particlePayload.speed = &speed;
 	particlePayload.screenSize = &screenSize;
-	particlePayload.colorPalette = colorSource;
-
-	particle = new Particle(particlePayload);
+	particlePayload.colorPalette = new PaletteSource("palettes/MonteCarlo.jpg");
 
 	name = "Covid19";
 	allocate(768, 1024);
@@ -48,7 +45,6 @@ void Covid19::reset() {
 	for (auto p : particles) {
 		p.second->randomize();
 	}
-	particle->randomize();
 
 	// ofClear(0.);
 	resetTime = ofGetElapsedTimef();
@@ -69,6 +65,7 @@ void Covid19::update() {
 	if (index != lastIndex) {
 		scaledSize = ofMap(size, 0, MAX_CASE_SCALE, 3, 50);
 
+		// TODO: Move this to particle->update()
 		auto entry = covidData.bucketedData.find(make_pair(clock.currentDate(), "US"));
 		if (entry != covidData.bucketedData.end()) {
 			int32_t growth = entry->second;
@@ -78,15 +75,10 @@ void Covid19::update() {
 		}
 	}
 
-	particle->update(scaledSize + scaledStep * clock.transitionPercentage);
+	for(auto particle : particles) {
+		particle.second->update(scaledSize + scaledStep * clock.transitionPercentage);
+	}
 	lastIndex = index;
-
-	// TODO: Move this to particle
-	glm::ivec2 offset((int)(ofRandom(50) - 25));
-	colorLocation += offset;
-	colorLocation.x = ofWrap(colorLocation.x, 0, colorSource->numColors().x);
-	colorLocation.y = ofWrap(colorLocation.y, 0, colorSource->numColors().y);
-	particle->color = colorSource->getColorAt(colorLocation);
 }
 
 void Covid19::draw() {
@@ -95,9 +87,14 @@ void Covid19::draw() {
 		ofDrawRectangle(0., 0., fbo->getWidth(), fbo->getHeight());
 		ofSetColor(0.);
 		ofDrawRectangle(5., 5., fbo->getWidth() - 10., fbo->getHeight() - 10.);
+	} else {
+		ofSetColor(0.,5);
+		ofDrawRectangle(0., 0., fbo->getWidth(), fbo->getHeight());
 	}
 
-	particle->draw();
+	for (auto& particle : particles) {
+		particle.second->draw();
+	}
 
 	auto formattedDate =
 		Poco::DateTimeFormatter::format(clock.currentDate(), DATE_FORMAT);
@@ -110,7 +107,7 @@ void Covid19::draw() {
 	ofSetColor(255.);
 	font.drawString(formattedDate, fbo->getWidth() / 2.f,
 					fbo->getHeight() / 2.f);
-	font.drawString(to_string(particle->scaledSize), fbo->getWidth() / 2.f, fbo->getHeight() / 2.f + textField.height + 5.f);
+	// font.drawString(to_string(particle->scaledSize), fbo->getWidth() / 2.f, fbo->getHeight() / 2.f + textField.height + 5.f);
 	font.drawString(to_string(size), fbo->getWidth() / 2.f, fbo->getHeight() / 2.f + textField.height*2 + 10.f);
 }
 

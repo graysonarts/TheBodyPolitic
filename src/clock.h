@@ -7,27 +7,9 @@
 
 class Clock {
 	public:
-		void setup(Poco::Timestamp startDate, Poco::Timestamp endDate) {
-			this->startDate = startDate;
-			this->endDate = endDate;
-			numDays = ceil((endDate - startDate)/1000./1000./60./60./24.); // Microseconds;
-			index = 0;
-			speed = 1000.f;
-			time = 0.f;
-		}
-
-		bool update() {
-			int lastIndex = index;
-			time = ofGetElapsedTimeMillis();
-			index = ceil(fmod(time / speed, numDays));
-			transitionPercentage = fmod(time, speed) / speed;
-
-			return lastIndex > index;
-		}
-
-		Poco::Timestamp currentDate() const {
-			return startDate + Poco::Timespan(index, 0, 0, 0, 0);
-		}
+		void setup(Poco::Timestamp startDate, Poco::Timestamp endDate);
+		bool update();
+		Poco::Timestamp currentDate() const;
 
 	Poco::Timestamp startDate, endDate;
 	int index, numDays;

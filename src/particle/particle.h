@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "../palette/palette.h"
+#include "../clock.h"
 
 struct ParentReference {
 	float *speed;
@@ -16,7 +17,7 @@ class Particle {
 		ofColor color;
 		glm::vec2 colorLocation;
 		const ParentReference& parent;
-		float scaledSize = 10.; // TODO: Update Size
+		float scaledSize = 1.; // TODO: Update Size
 
 		Particle(const ParentReference &parent)
 			: location({0., 0.}), velocity({1., 1.}), colorLocation({1., 1.}), parent(parent)

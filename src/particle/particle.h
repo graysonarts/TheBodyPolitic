@@ -51,6 +51,8 @@ class Particle {
 			if (location.y <= scaledSize || location.y >= parent.screenSize->y - currentSize) {
 				velocity.y *= -1;
 			}
+
+			cycleColor();
 		}
 
 		void calculateSize(const Clock &clock) {
@@ -60,6 +62,14 @@ class Particle {
 			size += growth;
 			float nextScaledSize = ofMap(size, 0, MAX_CASE_SCALE, MIN_SIZE, MAX_SIZE);
 			scaledStep = nextScaledSize - scaledSize;
+		}
+
+		void cycleColor() {
+				glm::ivec2 offset((int)(ofRandom(50) - 25));
+				colorLocation += offset;
+				colorLocation.x = ofWrap(colorLocation.x, 0, parent.colorPalette->numColors().x);
+				colorLocation.y = ofWrap(colorLocation.y, 0, parent.colorPalette->numColors().y);
+				updateColor();
 		}
 
 		void draw() const {

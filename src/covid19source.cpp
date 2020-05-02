@@ -58,11 +58,8 @@ void Covid19::reset() {
 void Covid19::update() {
 	bool resetTriggered = clock.update();
 	if (resetTriggered) {
-		next_palette();
-	}
-
-	if (ofGetElapsedTimef() - resetTime > 120.f) {
 		reset();
+		next_palette();
 	}
 
 	index = clock.index;

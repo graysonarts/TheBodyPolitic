@@ -12,6 +12,7 @@ struct CovidData {
 
 	enum FieldLabel {
 		Case_Type,
+		Total_Tested,
 		Cases,
 		Difference,
 		Date,
@@ -28,6 +29,7 @@ struct CovidData {
 
 	CaseType caseType;
 	int cases;
+	int total_tested;
 	int difference;
 	Poco::Timestamp date;
 	string countryRegion;

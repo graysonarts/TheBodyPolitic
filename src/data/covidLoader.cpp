@@ -58,6 +58,7 @@ RawCovidData _loadRawData(const string &filename) {
 			caseTypeMap[x.getString(CovidData::FieldLabel::Case_Type)];
 		;
 		tmp.cases = x.getInt(CovidData::FieldLabel::Cases);
+		tmp.total_tested = x.getInt(CovidData::FieldLabel::Total_Tested);
 		tmp.difference = x.getInt(CovidData::FieldLabel::Difference);
 		tmp.date = parseDate(x.getString(CovidData::FieldLabel::Date));
 		tmp.countryRegion = x.getString(CovidData::FieldLabel::Country_Region);
@@ -109,7 +110,7 @@ std::pair<BucketMap, Buckets> _bucketData(const std::vector<CovidData>& data) {
 }
 
 string countryOnly(const string& input) {
-	auto last_comma = find_if(input.crbegin(), input.crend(), [](auto c) { return c == ','; });
+	auto last_comma = find_if(input.crbegin(), input.crend(), [](char c) { return c == ','; });
 	if (last_comma == input.crend()) return input;
 
 	--last_comma; // Skip space, it's -- because it's a reverse iterator...

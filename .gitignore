@@ -1,7 +1,8 @@
-bin/bodyProject*
+bin/TheBodyPolitic*
 bin/*.so
 .vscode
 obj
-bin/BodyProject.app
+bin/*.app
 bin/data/covid_data.csv
 *~
+.envrc

@@ -1,6 +1,8 @@
 #include "ofApp.h"
 #include "covidLoader.h"
 
+const string PARAM_FILE = "parameters.xml";
+
 void ofDisplayApp::setup() {
 	ofxGuiEnableHiResDisplay();
 	ofEnableSmoothing();
@@ -17,16 +19,24 @@ void ofDisplayApp::setup() {
 	tempo = tempo.set("tempo", 250., 100., 10000.);
 
 	gui.setup("panel");
-	gui.setPosition(1000.0f, 0.f);
+	// gui.setPosition(1000.0f, 0.f);
 	gui.add(speed);
 	gui.add(drawLine);
 	gui.add(tempo);
 	gui.add(clearScreen.set("Clear Screen", false));
+	gui.add(offsetX.set("label offset x", 0, 0, ofGetWidth() / 2.f));
+	gui.add(offsetY.set("label offset y", 0, 0, ofGetHeight() / 2.f));
+	gui.add(labelRotation.set("label rotation", 0, 0, 360));
 
 	speed.addListener(&covid19, &Covid19::onSpeedChange);
 	drawLine.addListener(&covid19, &Covid19::onDrawChange);
 	tempo.addListener(&covid19, &Covid19::onTempoChange);
 	clearScreen.addListener(&covid19, &Covid19::onClearChange);
+	offsetX.addListener(&covid19, &Covid19::onXOffsetChange);
+	offsetY.addListener(&covid19, &Covid19::onYOffsetChange);
+	labelRotation.addListener(&covid19, &Covid19::onLabelRotationChange);
+
+	gui.loadFromFile(PARAM_FILE);
 
 	piMapper.registerFboSource(covid19);
 	piMapper.setup();
@@ -59,10 +69,22 @@ void ofDisplayApp::onControlChange(int control, int value) {
 		case 2: // Slider 1
 			speed = ofMap(value, 0, 127, 1, 10);
 			break;
+		case 3: // Slider 2
+			offsetX = ofMap(value, 0, 127, 0, ofGetWidth() / 2.f);
+			break;
+		case 4:
+			offsetY = ofMap(value, 0, 127, 0, ofGetHeight() / 2.f);
+			break;
 		case 14: // Knob 1
 			tempo = ofMap(value, 0, 127, 250., 5000.);
 			break;
+		case 15: // Knob 2
+			labelRotation = ofMap(value, 0, 127, 0, 360);
+			break;
 		case 44: // Record Button
+			gui.saveToFile(PARAM_FILE);
+			break;
+		case 46: // Stop Button
 			showGui = value > 64;
 			break;
 		case 48: // Next Button (next palette)

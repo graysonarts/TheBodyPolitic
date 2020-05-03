@@ -111,15 +111,18 @@ void Covid19::draw() {
 		Poco::DateTimeFormatter::format(clock.currentDate(), DATE_FORMAT);
 
 	ofRectangle textField = font.getStringBoundingBox(
-		formattedDate, fbo->getWidth() / 2.f, fbo->getHeight() / 2.f);
+		formattedDate, labelOffset.x, labelOffset.y);
 	textField.scaleFromCenter(2.0f);
-	ofSetColor(0.);
-	ofDrawRectangle(textField.x, textField.y, textField.width, textField.height);
-	ofSetColor(255.);
-	font.drawString(formattedDate, fbo->getWidth() / 2.f,
-					fbo->getHeight() / 2.f);
-	// font.drawString(to_string(particle->scaledSize), fbo->getWidth() / 2.f, fbo->getHeight() / 2.f + textField.height + 5.f);
-	// font.drawString(to_string(size), fbo->getWidth() / 2.f, fbo->getHeight() / 2.f + textField.height*2 + 10.f);
+	ofPushMatrix();
+		ofSetColor(0.f);
+		ofTranslate(fbo->getWidth() / 2.f - textField.width / 2.f, fbo->getHeight() / 2.f - textField.height / 2.f);
+		ofTranslate(textField.x, textField.y);
+		ofRotateZDeg(labelRotation);
+
+		ofDrawRectangle(-textField.width / 2.f, -textField.height / 2.f, textField.width, textField.height);
+		ofSetColor(255.);
+		font.drawString(formattedDate, -textField.width / 4.f, textField.height /4.f);
+	ofPopMatrix();
 
 	resetTriggered = false;
 }
@@ -143,6 +146,10 @@ void Covid19::onDrawChange(bool &b) { clearScreen = !b; }
 void Covid19::onTempoChange(float &f) { clock.speed = f; }
 
 void Covid19::onClearChange(bool &b) { triggerClear = b; }
+
+void Covid19::onXOffsetChange(float &f) { labelOffset.x = f; }
+void Covid19::onYOffsetChange(float &f) { labelOffset.y = f; }
+void Covid19::onLabelRotationChange(float &f) { labelRotation = f; }
 
 void Covid19::handleNextPaletteEvent() {
 	next_palette();

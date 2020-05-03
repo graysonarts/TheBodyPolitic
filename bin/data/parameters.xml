@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<panel>
+	<speed>1</speed>
+	<clear_screen_per_frame>1</clear_screen_per_frame>
+	<tempo>3000</tempo>
+	<Clear_Screen>0</Clear_Screen>
+	<label_offset_x>294.803</label_offset_x>
+	<label_offset_y>50.3937</label_offset_y>
+	<label_rotation>342.992</label_rotation>
+</panel>

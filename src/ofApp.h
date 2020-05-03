@@ -29,6 +29,9 @@ private:
 	ofParameter<float> tempo;
 	ofParameter<bool> drawLine;
 	ofParameter<bool> clearScreen;
+	ofParameter<float> offsetX;
+	ofParameter<float> offsetY;
+	ofParameter<float> labelRotation;
 	ofxMidiIn midiIn;
 
 	Covid19 covid19;

@@ -19,6 +19,9 @@ public:
 	void onTempoChange(float &s);
 	void onDrawChange(bool &b);
 	void onClearChange(bool &b);
+	void onXOffsetChange(float &f);
+	void onYOffsetChange(float &f);
+	void onLabelRotationChange(float &f);
 
 	ofTrueTypeFont font;
 
@@ -32,11 +35,12 @@ private:
 
 	void handleNextPaletteEvent();
 
-	glm::vec2 screenSize;
+	glm::vec2 screenSize, labelOffset;;
 	glm::ivec2 colorLocation;
 	float speed = 1.0f;
 	float resetTime;
 	float size = 20.0f;
+	float labelRotation = 0.f;
 	float scaledSize = 0.0f;
 	float scaledStep = 0.0f;
 	bool clearScreen = false;

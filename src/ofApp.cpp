@@ -4,7 +4,7 @@
 const string PARAM_FILE = "parameters.xml";
 
 void ofDisplayApp::setup() {
-	ofxGuiEnableHiResDisplay();
+	// ofxGuiEnableHiResDisplay();
 	ofEnableSmoothing();
 	ofSetVerticalSync(true);
 
@@ -19,7 +19,7 @@ void ofDisplayApp::setup() {
 	tempo = tempo.set("tempo", 250., 100., 10000.);
 
 	gui.setup("panel");
-	// gui.setPosition(1000.0f, 0.f);
+	gui.setPosition(ofGetWidth()/2.f, ofGetHeight()/2.f);
 	gui.add(speed);
 	gui.add(drawLine);
 	gui.add(tempo);

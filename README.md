@@ -17,13 +17,16 @@ between Russell "Grayson" Hay and Kai Curtis.
 
 ### Russell "Grayson" Hay
 
-Russell was born in southern Louisiana, and has explored various aspects of creativity and creation throughout his
+Russell Hay was born in southern Louisiana, and has explored various aspects of creativity and creation throughout his
 life. The body of his work focuses on movement of the human body either in still images, video productions, or
 live performances. When he is not actively creating art, he toils away at a computer for Tableau Software.
 
 ### Kai Curtis
 
-_TODO: Add Bio_
+Kai Curtis is a sometimes thinker and less often doer who started living in Seattle 20 years ago and forgot to stop.
+He likes to believe that computers can bring us closer to ourselves, each other, and the world we live in,
+despite having read the comments. He doesn’t have a soundcloud, but he suggests donating to your local food bank
+and finding a supportive community to exist in during these not-quite-end times. 口癖！
 
 ## Technical Details
 
